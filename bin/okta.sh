@@ -1,6 +1,18 @@
 #!/bin/bash
+# Initial version - SJ
+# Add pre-reqs
 
 clear
+
+KUBECTL=$(command -v kubectl)
+
+#### KUBECTL
+#### Check to make sure the kubectl is available
+if [ ! -f "${KUBECTL}" ]; then
+    echo "ERROR: Unable to locate the KUBECTL binary."
+    echo "FIX: Please modify the \${KUBECTL} variables in the program header."
+    exit 1
+fi
 
 echo " --> Starting OKTA restore ! "
 sleep 5
@@ -23,13 +35,13 @@ prompt_continue
 
 echo " --> Commencing restore ! "
 
-kubectl apply -f authconfigs.management.cattle.io\#v3/keycloakoidc.json
+kubectl apply -f authconfigs.management.cattle.io\#v3/okta.json
 
 kubectl apply -f users.management.cattle.io\#v3/.
 
 kubectl apply -f userattributes.management.cattle.io\#v3/.
 
-#This is missing Key for OIDC
-kubectl apply -f secrets.#v1/cattle-global-data/keycloakoidcconfig-clientsecret.json
+#This is missing Key for OKTA
+kubectl apply -f secrets.#v1/cattle-global-data/oktaconfig-spkey.json
 
 echo " <-- Restore complete ! "
