@@ -19,6 +19,7 @@ check_binaries() {
   fi
 }
 
+check_binaries
 
 # List all CRD names into an array
 crd_list=$(kubectl get crds --no-headers -o custom-columns=":metadata.name")
