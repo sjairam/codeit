@@ -23,14 +23,6 @@ check_binaries() {
 #Check binaries
 check_binaries
 
-sleep 2
-
-# Check if the number of arguments is correct
-if [ "$#" -ne 1 ]; then
-    echo "Usage: $0 <deployment-name>"
-    exit 1
-fi
-
 # Assign the first argument to the DEPLOYMENT_NAME variable
 DEPLOYMENT_NAME=$1
 
