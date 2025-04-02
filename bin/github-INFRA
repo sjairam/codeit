@@ -12,7 +12,7 @@ timeSec=2
 
 echo " ==>> Creating repos "
 
-cd ~/Documents/GitHub/
+cd ~/Documents/GitHub/HUIT/
 mkdir APPS-INFRA
 cd APPS-INFRA
 
@@ -55,6 +55,9 @@ git clone git@github.huit.harvard.edu:LTS/devsecops-INFRA.git
 sleep $timeSec
 
 git clone git@github.huit.harvard.edu:LTS/eda-INFRA.git
+sleep $timeSec
+
+git clone git@github.huit.harvard.edu:LTS/etds-INFRA.git
 sleep $timeSec
 
 git clone git@github.huit.harvard.edu:LTS/fts-INFRA.git
