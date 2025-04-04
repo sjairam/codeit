@@ -1,0 +1,17 @@
+#!/bin/bash
+clear
+
+AWS=$(command -v aws)
+
+if [ ! -f "${AWS}" ]; then
+    echo "ERROR: The aws binary does not exist."
+    echo "FIX: Please modify the \${AWS} variable in the program header."
+    exit 1
+fi
+
+echo "List all the running EC2 instances with their InstanceIDs, Names, States, and Private IPs"
+
+aws ec2 describe-instances \
+    --filters "Name=instance-state-name,Values=running" \
+    --query 'Reservations[*].Instances[*].{InstanceID:InstanceId, Name:Tags[?Key==`Name`].Value | [0], State:State.Name, PrivateIP:PrivateIpAddress}' \
+    --output table
