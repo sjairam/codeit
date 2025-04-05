@@ -1,0 +1,33 @@
+#!/bin/bash
+# Initial version - neeed to check for pre-reqs
+
+clear
+
+SQLPLUS=$(command -v sqlplus)
+
+if [ ! -f "${SQLPLUS}" ]; then
+    echo "ERROR: The sqlplus binary does not exist."
+    echo "FIX: Please modify the \${SQLPLUS} variable in the program header."
+    exit 1
+fi
+
+# Function to show usage information
+show_usage() {
+    echo "Usage: $0 <username> <hostname> <port> <sid>"
+    echo "Example: $0 dbadmin localhost 1521 database"
+}
+
+# Check if the required number of arguments is provided
+if [ "$#" -ne 4 ]; then
+    echo "Error: Invalid number of arguments."
+    show_usage
+    exit 1
+fi
+
+USERNAME="$1"
+HOSTNAME="$2"
+PORT="$3"
+DB_NAME="$4"
+
+# Run the sqlplus command with the provided credentials
+sqlplus "${USERNAME}/${PASSWORD}@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=${HOSTNAME})(Port=${PORT}))(CONNECT_DATA=(SID=${DB_NAME})))"
