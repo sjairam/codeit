@@ -1,4 +1,6 @@
 #!/bin/bash
+# Initial version
+
 clear
 
 AWS=$(command -v aws)
