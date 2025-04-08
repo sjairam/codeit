@@ -1,6 +1,10 @@
 
 APRIL 2025
 -----------
+20250408 - Stop DRS1 Oracle - DEV
+20250408 - Stop DRS2 Oracle - DEV
+20250408 - Upgrade Curiosity QA - QA 09:00 GMT
+
 20250403 - Upgrade Aspace MySQL - QA
 20250403 - Stopped glib-qa Oracle - QA
 20250403 - Stopped Hgl Prod clone oracle - QA
