@@ -1,6 +1,9 @@
 
 APRIL 2025
 -----------
+20250409 - Troubleshoot DRS DEV issues
+20250409 - Upgrade EDA QA & PROD (1 instance) - 10:00 GMT
+
 20250408 - Stop DRS1 Oracle - DEV
 20250408 - Stop DRS2 Oracle - DEV
 20250408 - Upgrade Curiosity QA - QA 09:00 GMT
