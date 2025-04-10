@@ -1,6 +1,11 @@
 
 APRIL 2025
 -----------
+20250410 - Upgraded LibMonitor QA & PROD - PROD
+
+20250409 - Enabled OKTA in QA - QA
+20250409 - Update QA console to 2.10.1
+20250409 - Update DEV console to 2.10.1
 20250409 - Troubleshoot DRS DEV issues
 20250409 - Upgrade EDA QA & PROD (1 instance) - 10:00 GMT
 
