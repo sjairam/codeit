@@ -8,15 +8,15 @@ if [ ! -x "${AWS}" ]; then
     exit 1
 fi
 
-# Fetch all RDS instances with PostgreSQL as the database engine
+# Fetch all RDS instances with MySQL as the database engine
 rds_instances=$(aws rds describe-db-instances \
     --query "DBInstances[?Engine=='mysql'].[DBInstanceIdentifier, DBInstanceClass, Engine, EngineVersion, DBInstanceStatus,MultiAZ]" \
     --output table)
 
 # Check if any PostgreSQL RDS instances are found
 if [ -z "$rds_instances" ]; then
-    echo "No PostgreSQL RDS instances found."
+    echo "No MySQL RDS instances found."
 else
-    echo "PostgreSQL RDS Instances:"
+    echo "MySQL RDS Instances:"
     echo "$rds_instances"
 fi
