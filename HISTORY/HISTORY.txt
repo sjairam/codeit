@@ -1,8 +1,11 @@
 
 APRIL 2025
 -----------
+20250414 - Update list_rds back to shell script
+20250414 - Upgrade NRS QA postgres - QA
 
-
+20250411 - Turned off MultiAZ for libmonitor and lc-collections - prod
+20250411 - Turned off MultiAZ for libmonitor and lc-collections - prod
 20250411 - Turned off MultiAZ for libmonitor and lc-collections - prod 
 
 20250410 - Stopped DRS1 DEV & DRS2 DEV - dev
