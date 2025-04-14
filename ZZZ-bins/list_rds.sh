@@ -9,33 +9,47 @@ if [ ! -x "${AWS}" ]; then
 fi
 
 checkMySQL (){
-    rds_instances=$(aws rds describe-db-instances \
+    aws rds describe-db-instances \
         --query "DBInstances[?Engine=='mysql'].[DBInstanceIdentifier, DBInstanceClass, Engine, EngineVersion, DBInstanceStatus,MultiAZ]" \
-        --output table)
+        --output table
 }
 
 checkOracle (){
-    rds_instances=$(aws rds describe-db-instances \
+    aws rds describe-db-instances \
         --query "DBInstances[?Engine=='oracle-ee'].[DBInstanceIdentifier, DBInstanceClass, Engine, EngineVersion, DBInstanceStatus,MultiAZ]" \
-        --output table)
+        --output table
 }
-
 
 checkPostgres (){
-    rds_instances=$(aws rds describe-db-instances \
+    aws rds describe-db-instances \
         --query "DBInstances[?Engine=='postgres'].[DBInstanceIdentifier, DBInstanceClass, Engine, EngineVersion, DBInstanceStatus,MultiAZ]" \
-        --output table)
+        --output table
 }
 
+usage()
+{
+   echo " "
+   echo " You need to pass in 1 parameter.  Either 'mysql', 'postgres' or 'oracle' "
+   echo ""
+}
 
-if [ $1 == "postgres"];
-    checkPostgres
+if [ $# -ne 1 ]; then
+    usage
+    exit 1
 fi
 
-if [ $1 == "mysql"];
-    checkMySQL
-fi
-
-if [ $1 == "mysql"];
-    checkOracle
-fi
+case $1 in
+    "postgres")
+        checkPostgres
+        ;;
+    "mysql")
+        checkMySQL
+        ;;
+    "oracle")
+        checkOracle
+        ;;
+    *)
+        usage
+        exit 1
+        ;;
+esac
