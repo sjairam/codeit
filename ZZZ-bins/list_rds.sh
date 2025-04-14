@@ -26,6 +26,14 @@ checkPostgres (){
         --output table
 }
 
+checkRDSInstances () {
+    local engine="$1"
+    aws rds describe-db-instances \
+        --query "DBInstances[?Engine=='${engine}'].[DBInstanceIdentifier, DBInstanceClass, Engine, EngineVersion, DBInstanceStatus,MultiAZ]" \
+        --output table
+}
+
+
 usage()
 {
    echo " "
@@ -40,13 +48,13 @@ fi
 
 case $1 in
     "postgres")
-        checkPostgres
+        checkRDSInstances "postgres"
         ;;
     "mysql")
-        checkMySQL
+        checkRDSInstances "mysql"
         ;;
     "oracle")
-        checkOracle
+        checkRDSInstances "oracle-ee"
         ;;
     *)
         usage
