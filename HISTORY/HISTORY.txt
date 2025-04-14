@@ -1,8 +1,14 @@
 
 APRIL 2025
 -----------
+
+
+20250411 - Turned off MultiAZ for libmonitor and lc-collections - prod 
+
+20250410 - Stopped DRS1 DEV & DRS2 DEV - dev
 20250410 - Upgraded LibMonitor QA & PROD - PROD
 
+20250409 - Deleted qlib-qa - QA 
 20250409 - Enabled OKTA in QA - QA
 20250409 - Update QA console to 2.10.1
 20250409 - Update DEV console to 2.10.1
