@@ -1,0 +1,27 @@
+#!/bin/bash
+# Inital version - sj 
+# DUmbass - check paramaters 
+
+# This script sets up the environment variables for ORCA Security by taking two input arguments.
+clear
+
+# Check if both parameters are provided
+if [ "$#" -ne 2 ]; then
+  echo "Usage: $0 <ORCA_SECURITY_API_TOKEN> <ORCA_PROJECT_KEY>"
+  exit 1
+fi
+
+# Assign the input parameters to variables
+ORCA_SECURITY_API_TOKEN=$1
+ORCA_PROJECT_KEY=$2
+
+# Export variables
+export ORCA_SECURITY_API_TOKEN
+export ORCA_PROJECT_KEY
+
+# Optionally, you can echo the variables to confirm they have been set
+# DONT show TOKEN
+# echo "ORCA_SECURITY_API_TOKEN is set to $ORCA_SECURITY_API_TOKEN"
+echo "ORCA_PROJECT_KEY is set to $ORCA_PROJECT_KEY"
+
+echo "Environment variables have been set for ORCA Security."
