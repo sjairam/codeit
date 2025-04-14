@@ -8,31 +8,12 @@ if [ ! -x "${AWS}" ]; then
     exit 1
 fi
 
-checkMySQL (){
-    aws rds describe-db-instances \
-        --query "DBInstances[?Engine=='mysql'].[DBInstanceIdentifier, DBInstanceClass, Engine, EngineVersion, DBInstanceStatus,MultiAZ]" \
-        --output table
-}
-
-checkOracle (){
-    aws rds describe-db-instances \
-        --query "DBInstances[?Engine=='oracle-ee'].[DBInstanceIdentifier, DBInstanceClass, Engine, EngineVersion, DBInstanceStatus,MultiAZ]" \
-        --output table
-}
-
-checkPostgres (){
-    aws rds describe-db-instances \
-        --query "DBInstances[?Engine=='postgres'].[DBInstanceIdentifier, DBInstanceClass, Engine, EngineVersion, DBInstanceStatus,MultiAZ]" \
-        --output table
-}
-
 checkRDSInstances () {
     local engine="$1"
     aws rds describe-db-instances \
         --query "DBInstances[?Engine=='${engine}'].[DBInstanceIdentifier, DBInstanceClass, Engine, EngineVersion, DBInstanceStatus,MultiAZ]" \
         --output table
 }
-
 
 usage()
 {
@@ -54,6 +35,7 @@ case $1 in
         checkRDSInstances "mysql"
         ;;
     "oracle")
+        # Change oracel to oracle-ee
         checkRDSInstances "oracle-ee"
         ;;
     *)
