@@ -6,6 +6,10 @@ APRIL 2025
 20250415 - Turned off MultiAZ HGL PROD - PROD
 20250415 - Upgrade Hollislinks QA & PROD - PROD 
 20250415 - Turned off MultiAZ for IIIF PROD - PROD
+20250415 - Deleted drs-billing (postgres) - DEV
+20250415 - Deleted hollislinks
+20250415 - Deleted DRS1 DEV
+20250415 - Deleted DRS2 DEV
 
 20250414 - DRS1QA to 19.0.0.24 took 42 mins - QA 
 20250414 - Update list_rds back to shell script
