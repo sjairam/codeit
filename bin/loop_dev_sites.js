@@ -6,15 +6,17 @@ export let options = {
     duration: '60s',  // Duration of the test
 };
 
+// ARCHIVED 
+// https://bibdata-dev.lib.harvard.edu
+// https://booklabeler-dev.lib.harvard.edu
+
 const urls = [ 
-    'https://acorn-dev.lib.harvard.edu/records/list',
+    'https://acorn-dev.lib.harvard.edu/records/list',   //ACORN
     'https://arclight-dev.lib.harvard.edu/',
-    'https://api-dev.lib.harvard.edu/v2/items',      //LibraryCloud
-    'https://aspace-dev.lib.harvard.edu',
-    'https://aspaceapi-dev.lib.harvard.edu',
-    'https://aspacepui-dev.lib.harvard.edu',
-    'https://bibdata-dev.lib.harvard.edu',
-    'https://booklabeler-dev.lib.harvard.edu',
+    'https://api-dev.lib.harvard.edu/v2/items',         //LibraryCloud
+    'https://aspace-dev.lib.harvard.edu',               // Aspace 1
+    'https://aspaceapi-dev.lib.harvard.edu',            // Aspace 2
+    'https://aspacepui-dev.lib.harvard.edu',            // Aspace 3
     'https://collex-dev.lib.harvard.edu',
     'https://curiosity-dev.lib.harvard.edu',
     'https://dims-dev.lib.harvard.edu/readiness',
@@ -22,6 +24,7 @@ const urls = [
     'https://drs2-dev.hul.harvard.edu',
     'https://drs2-dev.hul.harvard.edu/drs2_webadmin/search',
     'https://drsmdsrv-dev.lib.harvard.edu/drs_metadata/rest/heartbeat',         //MDS
+    'https://drs-id-mongo-publisher-dev.lib.harvard.edu/api/healthcheck',       //OCFL-Validator
     'https://eadchecker-dev.lib.harvard.edu',
     'https://eda-dev.lib.harvard.edu',
     'https://embed-dev.lib.harvard.edu',                            //Viewer
