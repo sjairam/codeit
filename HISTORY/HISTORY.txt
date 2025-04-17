@@ -1,6 +1,11 @@
 
 APRIL 2025
 -----------
+20250417 - Resize OCFL QA - QA
+20250417 - Upgrade OCFL QA - QA
+20250417 - Upgrade Curiosity Prod - PROD
+20250417 - Stopped Aspace Pre - PROD
+
 20250415 - Turned off MultiAZ for ASPACE Prod - PROD
 20250415 - Stopped DRS1QA - QA
 20250415 - Turned off MultiAZ HGL PROD - PROD
