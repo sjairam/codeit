@@ -42,6 +42,9 @@ sleep $timeSec
 git clone git@github.huit.harvard.edu:LTS/booklabeler-INFRA.git
 sleep $timeSec
 
+git clone git@github.huit.harvard.edu:LTS/collex-INFRA.git
+sleep $timeSec
+
 git clone git@github.huit.harvard.edu:LTS/curiosity-INFRA.git
 sleep $timeSec
 
