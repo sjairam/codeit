@@ -8,6 +8,7 @@ import (
 )
 
 func main() {
+
 	letters := []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 	numbers := []rune("0123456789")
 	symbols := []rune("!#$%&()*+")
