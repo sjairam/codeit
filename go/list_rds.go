@@ -48,11 +48,12 @@ func main() {
 
 	// Prepare the command to fetch all RDS instances with specified database engine
 	cmd := exec.Command(awsPath, "rds", "describe-db-instances",
-		"--query", fmt.Sprintf("DBInstances[?Engine=='%s'].[DBInstanceIdentifier, DBInstanceClass, Engine, EngineVersion, DBInstanceStatus, MultiAZ]", engine),
+		"--query", fmt.Sprintf("DBInstances[?Engine=='%s'].[DBInstanceIdentifier, DBInstanceClass, Engine, EngineVersion, DBInstanceStatus, AllocatedStorage, MultiAZ]", engine),
 		"--output", "table")
 
 	var out bytes.Buffer
 	cmd.Stdout = &out
+
 	cmd.Stderr = os.Stderr
 
 	// Execute the command and capture its output
@@ -62,6 +63,7 @@ func main() {
 		os.Exit(1)
 	}
 
+	fmt.Println("  Database       <   InstanceId       >  InstalceClass")
 	rdsInstances := strings.TrimSpace(out.String())
 
 	// Check if any RDS instances of specified engine are found
