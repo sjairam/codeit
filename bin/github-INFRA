@@ -78,6 +78,9 @@ sleep $timeSec
 git clone git@github.huit.harvard.edu:LTS/imgconv-INFRA.git
 sleep $timeSec
 
+git clone git@github.huit.harvard.edu:LTS/IvyPlusPod-INFRA.git
+sleep $timeSec
+
 git clone git@github.huit.harvard.edu:LTS/jobmonitor-INFRA.git
 sleep $timeSec
 
