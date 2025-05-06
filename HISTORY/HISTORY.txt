@@ -1,6 +1,9 @@
 
 MAY 2025
 --------
+20250506 - Update Istio - PROD
+20250506 - Update LZp ArgoCD - LZPROD
+
 20250504 - DRS2QA Oracle upgrade - QA
 
 APRIL 2025
