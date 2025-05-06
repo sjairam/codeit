@@ -1,4 +1,8 @@
 
+MAY 2025
+--------
+20250504 - DRS2QA Oracle upgrade - QA
+
 APRIL 2025
 -----------
 20250428 - Deleted DRS1PROD - PROD
@@ -92,3 +96,7 @@ MARCH 2025
            Stopped hdcdev (postgres) - DEV
 
 20250326 - Upgraded ESO 0.12 - PROD
+
+2023
+----
+202308 - RKE version 1.24
