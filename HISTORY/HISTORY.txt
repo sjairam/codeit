@@ -1,8 +1,12 @@
 
 MAY 2025
 --------
+20250508 - Update Istio - LZPROD
+20250508 - Update PROD ArgoCD - PROD
+
 20250506 - Update Istio - PROD
-20250506 - Update LZp ArgoCD - LZPROD
+20250506 - Update LZP ArgoCD - LZPROD
+20250506 - Recycled A to L namespaces - PROD
 
 20250504 - DRS2QA Oracle upgrade - QA
 
