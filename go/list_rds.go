@@ -1,7 +1,6 @@
 package main
 
 // Try Go with all databases
-
 import (
 	"bytes"
 	"fmt"
@@ -19,7 +18,7 @@ func usage() {
 }
 
 func main() {
-	//Check GO installed
+	//Check if GO installed
 	goPath, err := exec.LookPath("go")
 	if err != nil {
 		fmt.Println("ERROR: The Go binary does not exist or is not executable.")
@@ -63,7 +62,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Println("  Database       <   InstanceId       >  InstalceClass")
+	// TEST HEADINGS
+	// fmt.Println("  Database       ||    InstanceId      ||  InstalceClass")
 	rdsInstances := strings.TrimSpace(out.String())
 
 	// Check if any RDS instances of specified engine are found
