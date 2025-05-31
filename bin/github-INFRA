@@ -90,6 +90,9 @@ sleep $timeSec
 git clone git@github.huit.harvard.edu:LTS/JSTOR-INFRA.git
 sleep $timeSec
 
+git clone github.huit.harvard.edu/LTS/LibraryCloud-INFRA
+sleep $timeSec
+
 git clone git@github.huit.harvard.edu:LTS/LISTVIEW-INFRA.git
 sleep $timeSec
 
