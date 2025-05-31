@@ -57,6 +57,9 @@ sleep $timeSec
 git clone git@github.huit.harvard.edu:LTS/devsecops-INFRA.git
 sleep $timeSec
 
+git clone github.huit.harvard.edu/LTS/ebookplate-INFRA
+sleep $timeSec
+
 git clone git@github.huit.harvard.edu:LTS/eda-INFRA.git
 sleep $timeSec
 
