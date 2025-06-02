@@ -158,6 +158,10 @@ echo " --> Copy RKE"
 cp -R RKE* /Volumes/Data2024/Documents-$month-20$year/
 sleep $timeSec
 
+echo " --> Copy P*"
+cp -R S* /Volumes/Data2024/Documents-$month-20$year/
+sleep $timeSec
+
 echo " --> Copy T*"
 cp -R T* /Volumes/Data2024/Documents-$month-20$year/
 sleep $timeSec
@@ -226,9 +230,14 @@ echo " --> Going to 09"
 cp -R 09* /Volumes/Data2024/Documents-$month-20$year/Movies
 sleep $timeSec
 
+echo " --> Going to HARVARD"
+cp -R HAR* /Volumes/Data2024/Documents-$month-20$year/Movies
+sleep $timeSec
+
 echo " --> Going to HUMOUR"
 cp -R HUMOUR* /Volumes/Data2024/Documents-$month-20$year/Movies
 sleep $timeSec
+
 
 echo " --> Going to LEARNING"
 cp -R LEARNING* /Volumes/Data2024/Documents-$month-20$year/Movies
