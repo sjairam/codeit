@@ -1,13 +1,107 @@
 #!/bin/bash
 
-websites=("https://cluster-console.prod.lib.harvard.edu" "https://deployment.prod.lib.harvard.edu" "https://logs.prod.lib.harvard.edu/" "https://access.lib.harvard.edu/redirects/healthcheck" "https://acorn.lib.harvard.edu/" "https://arstaff.lib.harvard.edu/" "https://api.lib.harvard.edu/v2/items" "https://beta.hollisarchives.lib.harvard.edu" "https://bibdata.lib.harvard.edu/readinesscheck" "https://booklabeler.lib.harvard.edu/" "https://curiosity.lib.harvard.edu" "https://drsmdsrv.lib.harvard.edu/drs_metadata/rest/heartbeat" "https://drsmqsrv-prod.lib.harvard.edu/drs2_activemq/rest/heartbeat" "https://eadchecker.lib.harvard.edu/" "https://eda.lib.harvard.edu" "https://embed.lib.harvard.edu" "https://fts.lib.harvard.edu/fts/" "https://hollisarchives.lib.harvard.edu" "https://hgl.harvard.edu/" "https://hollisarchives.lib.harvard.edu" "https://ids.lib.harvard.edu" "https://iiif.lib.harvard.edu" "https://inlib-adm.lts.harvard.edu" "https://jobmon-prod.lib.harvard.edu" "https://listview.lib.harvard.edu" "https://mps.lib.harvard.edu" "https://murner.lib.harvard.edu/api/healthcheck" "https://nrs.lib.harvard.edu/api/lookup/urn-3:fhcl:24851885" "https://policyadmin.lib.harvard.edu/policy/servlet/admin" "https://pds.lib.harvard.edu/pds" "https://secureexit.lib.harvard.edu/readinesscheck" "https://sharedshelflinker.lib.harvard.edu/swagger-ui/index.html" "https://tools.lib.harvard.edu/hdforms/retrieval" "https://webservices.lib.harvard.edu/rest/v3/hollis/marc/isbn/9780307269751?jsonp=foo" "https://wordshack.lib.harvard.edu/wordshack/rest/term/adminFlag/220" "https://viewer.lib.harvard.edu")
+# Define colors
+BLUE='\033[0;34m'
+CYAN='\033[0;36m'
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# Initialize counters
+total=0
+success=0
+failed=0
+
+# Print header with date and timestamp
+echo -e "${BLUE}=========================================${NC}"
+echo -e "${CYAN} ** PROD **  Environment Health Check${NC}"
+echo -e "${BLUE}Date: $(date '+%d-%m-%Y')${NC}"
+echo -e "${BLUE}Time: $(date '+%H:%M:%S')${NC}"
+echo -e "${BLUE}=========================================${NC}\n"
+
+websites=(
+    "https://cluster-console.prod.lib.harvard.edu"
+    "https://deployment.prod.lib.harvard.edu"
+    "https://logs.prod.lib.harvard.edu/"
+    "https://access.lib.harvard.edu/redirects/healthcheck"
+    "https://acorn.lib.harvard.edu/"
+    "https://arstaff.lib.harvard.edu/"
+    "https://api.lib.harvard.edu/v2/items"
+    "https://beta.hollisarchives.lib.harvard.edu"
+    "https://bibdata.lib.harvard.edu/readinesscheck"
+    "https://booklabeler.lib.harvard.edu/"
+    "https://curiosity.lib.harvard.edu"
+    "https://drsmdsrv.lib.harvard.edu/drs_metadata/rest/heartbeat"
+    "https://drsmqsrv-prod.lib.harvard.edu/drs2_activemq/rest/heartbeat"
+    "https://eadchecker.lib.harvard.edu/"
+    "https://eda.lib.harvard.edu"
+    "https://embed.lib.harvard.edu"
+    "https://fts.lib.harvard.edu/fts/"
+    "https://hollisarchives.lib.harvard.edu"
+    "https://hgl.harvard.edu/"
+    "https://hollisarchives.lib.harvard.edu"
+    "https://ids.lib.harvard.edu"
+    "https://iiif.lib.harvard.edu"
+    "https://inlib-adm.lts.harvard.edu"
+    "https://jobmon-prod.lib.harvard.edu"
+    "https://listview.lib.harvard.edu"
+    "https://mps.lib.harvard.edu"
+    "https://murner.lib.harvard.edu/api/healthcheck"
+    "https://nrs.lib.harvard.edu/api/lookup/urn-3:fhcl:24851885"
+    "https://policyadmin.lib.harvard.edu/policy/servlet/admin"
+    "https://pds.lib.harvard.edu/pds"
+    "https://secureexit.lib.harvard.edu/readinesscheck"
+    "https://sharedshelflinker.lib.harvard.edu/sharedshelf/resolve/123"
+    "https://tools.lib.harvard.edu/hdforms/retrieval"
+    "https://webservices.lib.harvard.edu/rest/v3/hollis/marc/isbn/9780307269751?jsonp=foo"
+    "https://wordshack.lib.harvard.edu/wordshack/rest/term/adminFlag/220"
+    "https://viewer.lib.harvard.edu"
+)
+
+total=${#websites[@]}
+current=0
 
 for site in "${websites[@]}"
-
 do
-
-    status_code=$(curl -Is $site | head -n 1 | cut -d ' ' -f 2)
-
-    echo "$site: $status_code"
-
+    ((current++))
+    echo -ne "${YELLOW}Checking site $current of $total...${NC}\r"
+    
+    # Measure response time and get status code
+    start_time=$(date +%s.%N)
+    response=$(curl -Is --connect-timeout 5 --max-time 10 "$site" 2>/dev/null)
+    end_time=$(date +%s.%N)
+    
+    # Calculate response time
+    response_time=$(echo "$end_time - $start_time" | bc)
+    response_time=$(printf "%.2f" $response_time)
+    
+    # Get status code
+    status_code=$(echo "$response" | head -n 1 | cut -d ' ' -f 2)
+    
+    # Handle curl failures
+    if [ -z "$status_code" ]; then
+        status_code="ERROR"
+        status_color=$RED
+        ((failed++))
+    else
+        # Set color based on status code
+        if [ "$status_code" = "200" ] || [ "$status_code" = "202" ] || [ "$status_code" = "302" ] ; then
+            status_color=$GREEN
+            ((success++))
+        else
+            status_color=$RED
+            ((failed++))
+        fi
+    fi
+    
+    echo -e "${CYAN}$site: ${status_color}$status_code${NC} (${YELLOW}${response_time}s${NC})"
 done
+
+# Print summary
+echo -e "\n${BLUE}=========================================${NC}"
+echo -e "${CYAN}Summary:${NC}"
+echo -e "${GREEN}Successful: $success${NC}"
+echo -e "${RED}Failed: $failed${NC}"
+echo -e "${BLUE}Total: $total${NC}"
+echo -e "${BLUE}=========================================${NC}"
