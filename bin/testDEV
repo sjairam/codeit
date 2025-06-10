@@ -1,13 +1,63 @@
-    #!/bin/bash
+#!/bin/bash
 
-websites=("https://cluster-console.dev.lib.harvard.edu" "https://deployment.dev.lib.harvard.edu" "https://logs.dev.lib.harvard.edu" "https://access-dev.lib.harvard.edu/redirects/healthcheck" "https://acorn-dev.lib.harvard.edu/records/list" "https://arclight-dev.lib.harvard.edu/" "https://aspace-dev.lib.harvard.edu/" "https://aspacepui-dev.lib.harvard.edu/" "https://collex-dev.lib.harvard.edu/" "https://curiosity-dev.lib.harvard.edu" "https://dims-dev.lib.harvard.edu/readiness" "https://drsmqsrv-dev.lib.harvard.edu/drs2_activemq/rest/heartbeat" "https://drs2-dev.hul.harvard.edu/drs2_webadmin/search" "https://eadchecker-dev.lib.harvard.edu/" "https://eda-dev.lib.harvard.edu" "https://embed-dev.lib.harvard.edu/" "https://etd-dev.lib.harvard.edu" "https://fal-solr-dev.lib.harvard.edu/api/healthcheck" "https://fts-dev.lib.harvard.edu/fts/" "https://hgl-dev.lib.harvard.edu" "https://hgladm-dev.lib.harvard.edu/" "https://geodata-dev-restricted.lib.harvard.edu" "https://ids-dev.lib.harvard.edu/ids/health" "https://iiif-dev.lib.harvard.edu/manifests/health" "https://imgconv-dev.lib.harvard.edu/health" "https://jobmon-dev.lib.harvard.edu" "https://jstor-dev.lib.harvard.edu" "https://lc-tools-dev.lib.harvard.edu/csv" "https://lc-tools-dev.lib.harvard.edu/oai/?verb=Identify" "https://listview-dev.lib.harvard.edu" "https://lts-pipelines-dev.lib.harvard.edu/airflow" "https://mps-dev.lib.harvard.edu/iiif/2/URN-3:HUL.OIS:101114808" "https://nrs-dev.lib.harvard.edu/healthcheck" "https://nrsadmin-dev.lib.harvard.edu/resources/search/advanced" "https://olivia-dev.lib.harvard.edu/olivia/servlet/OliviaServlet" "https://policyadmin-dev.lib.harvard.edu/policy/servlet/admin" "https://pds-dev.lib.harvard.edu/pds" "https://solr-dev.lib.harvard.edu/solr/#/login" "https://sds-dev.lib.harvard.edu/sds/video/400302240" "https://tools-dev.lib.harvard.edu/hdforms/retrieval" "https://viewer-dev.lib.harvard.edu/" "https://webservices-dev.lib.harvard.edu/rest/v3/hollis/marc/isbn/9780307269751?jsonp=foo")
+# Define colors
+BLUE='\033[0;34m'
+CYAN='\033[0;36m'
+NC='\033[0m' # No Color
+
+websites=(
+    "https://cluster-console.dev.lib.harvard.edu"
+    "https://deployment.dev.lib.harvard.edu"
+    "https://logs.dev.lib.harvard.edu"
+    "https://access-dev.lib.harvard.edu/redirects/healthcheck"
+    "https://acorn-dev.lib.harvard.edu/records/list"
+    "https://arclight-dev.lib.harvard.edu/"
+    "https://aspace-dev.lib.harvard.edu/"
+    "https://aspacepui-dev.lib.harvard.edu/"
+    "https://collex-dev.lib.harvard.edu/"
+    "https://curiosity-dev.lib.harvard.edu"
+    "https://dims-dev.lib.harvard.edu/readiness"
+    "https://drsmqsrv-dev.lib.harvard.edu/drs2_activemq/rest/heartbeat"
+    "https://drs2-dev.hul.harvard.edu/drs2_webadmin/search"
+    "https://eadchecker-dev.lib.harvard.edu/"
+    "https://eda-dev.lib.harvard.edu"
+    "https://embed-dev.lib.harvard.edu/"
+    "https://etd-dev.lib.harvard.edu"
+    "https://fal-solr-dev.lib.harvard.edu/api/healthcheck"
+    "https://fts-dev.lib.harvard.edu/fts/"
+    "https://hgl-dev.lib.harvard.edu"
+    "https://hgladm-dev.lib.harvard.edu/"
+    "https://geodata-dev-restricted.lib.harvard.edu"
+    "https://ids-dev.lib.harvard.edu/ids/health"
+    "https://iiif-dev.lib.harvard.edu/manifests/health"
+    "https://imgconv-dev.lib.harvard.edu/health"
+    "https://jobmon-dev.lib.harvard.edu"
+    "https://jstor-dev.lib.harvard.edu"
+    "https://lc-tools-dev.lib.harvard.edu/csv"
+    "https://lc-tools-dev.lib.harvard.edu/oai/?verb=Identify"
+    "https://listview-dev.lib.harvard.edu"
+    "https://lts-pipelines-dev.lib.harvard.edu/airflow"
+    "https://mps-dev.lib.harvard.edu/iiif/2/URN-3:HUL.OIS:101114808"
+    "https://nrs-dev.lib.harvard.edu/healthcheck"
+    "https://nrsadmin-dev.lib.harvard.edu/resources/search/advanced"
+    "https://olivia-dev.lib.harvard.edu/olivia/servlet/OliviaServlet"
+    "https://policyadmin-dev.lib.harvard.edu/policy/servlet/admin"
+    "https://pds-dev.lib.harvard.edu/pds"
+    "https://solr-dev.lib.harvard.edu/solr/#/login"
+    "https://sds-dev.lib.harvard.edu/sds/video/400302240"
+    "https://tools-dev.lib.harvard.edu/hdforms/retrieval"
+    "https://viewer-dev.lib.harvard.edu/"
+    "https://webservices-dev.lib.harvard.edu/rest/v3/hollis/marc/isbn/9780307269751?jsonp=foo"
+)
+
+current_datetime=$(date '+%Y-%m-%d %H:%M:%S')
+echo -e "${BLUE}Website Status Check${NC} - ${CYAN}$current_datetime${NC}"
+echo -e "${BLUE}----------------------------------------${NC}"
 
 for site in "${websites[@]}"
-
 do
-
     status_code=$(curl -Is $site | head -n 1 | cut -d ' ' -f 2)
-
-    echo "$site: $status_code"
-
+    printf "    %-60s %s\n" "$site:" "$status_code"
 done
+
+echo -e "${BLUE}----------------------------------------${NC}"
