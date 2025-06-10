@@ -128,6 +128,9 @@ sleep $timeSec
 git clone git@github.huit.harvard.edu:LTS/presto-INFRA.git
 sleep $timeSec
 
+git clone git@github.huit.harvard.edu:LTS/solr-INFRA.git
+sleep $timeSec
+
 git clone git@github.huit.harvard.edu:LTS/SDS-and-Wowza-INFRA.git
 sleep $timeSec
 
