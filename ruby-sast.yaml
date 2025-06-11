@@ -1,0 +1,82 @@
+name: Ruby SAST Scan
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  schedule:
+    - cron: '0 0 * * 0'
+
+jobs:
+  sast-scan:
+    name: Run Ruby SAST Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.2'
+        bundler-cache: true
+
+    - name: Install SAST tools
+      run: |
+        gem install brakeman bundler-audit dawnscanner rubocop rubocop-rails rubocop-performance
+        python -m pip install semgrep
+
+    - name: Run Brakeman
+      run: |
+        brakeman -q -w2 --no-progress -c config/brakeman.yml \
+        --format json --output brakeman-report.json \
+        --format html --output brakeman-report.html
+
+    - name: Run bundle-audit
+      run: |
+        bundle-audit check --update
+        bundle-audit check --format json > bundle-audit-report.json
+
+    - name: Run DawnScanner
+      run: |
+        dawn -u
+        dawn -j -o dawn-report.json
+
+    - name: Run RuboCop security checks
+      run: |
+        rubocop --require rubocop-rails --require rubocop-performance \
+        --format json --out rubocop-report.json \
+        --only Security/Open, Security/Eval, Security/MarshalLoad, \
+        Security/JSONLoad, Security/YAMLLoad, Security/CommandInjection, \
+        Security/FilePath, Rails/OutputSafety
+
+    - name: Run Semgrep
+      run: |
+        semgrep --config=p/ruby --config=p/rails \
+        --json -o semgrep-report.json \
+        --exclude-dir=vendor --exclude-dir=node_modules
+
+    - name: Upload all results
+      uses: actions/upload-artifact@v3
+      with:
+        name: sast-results
+        path: |
+          brakeman-report.*
+          bundle-audit-report.json
+          dawn-report.json
+          rubocop-report.json
+          semgrep-report.json
+        retention-days: 7
+
+    - name: Check for critical findings
+      run: |
+        if grep -q '"confidence": "High"' brakeman-report.json || \
+           grep -q '"criticality": "high"' dawn-report.json || \
+           grep -q '"severity": "error"' rubocop-report.json || \
+           grep -q '"severity": "ERROR"' semgrep-report.json; then
+          echo "::error::Critical security issues found!"
+          exit 1
+        fi
