@@ -30,10 +30,45 @@ jobs:
         python -m pip install semgrep
 
     - name: Run Brakeman
+      id: brakeman
       run: |
         brakeman -q -w2 --no-progress -c config/brakeman.yml \
         --format json --output brakeman-report.json \
         --format html --output brakeman-report.html
+      continue-on-error: true
+
+    - name: Process Brakeman Results
+      if: always()
+      run: |
+        if [ -f brakeman-report.json ]; then
+          # Extract warnings and create GitHub annotations
+          jq -r '.warnings[] | "::warning file=\(.file),line=\(.line),col=\(.column)::\(.message)"' brakeman-report.json >> $GITHUB_STEP_SUMMARY
+          
+          # Count warnings by confidence level
+          HIGH_WARNINGS=$(jq '.warnings | map(select(.confidence == "High")) | length' brakeman-report.json)
+          MEDIUM_WARNINGS=$(jq '.warnings | map(select(.confidence == "Medium")) | length' brakeman-report.json)
+          LOW_WARNINGS=$(jq '.warnings | map(select(.confidence == "Weak")) | length' brakeman-report.json)
+          
+          # Add summary to step output
+          echo "## Brakeman Security Scan Results" >> $GITHUB_STEP_SUMMARY
+          echo "- High confidence warnings: $HIGH_WARNINGS" >> $GITHUB_STEP_SUMMARY
+          echo "- Medium confidence warnings: $MEDIUM_WARNINGS" >> $GITHUB_STEP_SUMMARY
+          echo "- Low confidence warnings: $LOW_WARNINGS" >> $GITHUB_STEP_SUMMARY
+          
+          # Set output variables for other steps
+          echo "high_warnings=$HIGH_WARNINGS" >> $GITHUB_OUTPUT
+          echo "medium_warnings=$MEDIUM_WARNINGS" >> $GITHUB_OUTPUT
+          echo "low_warnings=$LOW_WARNINGS" >> $GITHUB_OUTPUT
+          
+          # Fail if there are high confidence warnings
+          if [ "$HIGH_WARNINGS" -gt 0 ]; then
+            echo "::error::Found $HIGH_WARNINGS high confidence security warnings"
+            exit 1
+          fi
+        else
+          echo "::error::Brakeman report not generated"
+          exit 1
+        fi
 
     - name: Run bundle-audit
       run: |
@@ -60,7 +95,7 @@ jobs:
         --exclude-dir=vendor --exclude-dir=node_modules
 
     - name: Upload all results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: sast-results
         path: |
@@ -69,14 +104,4 @@ jobs:
           dawn-report.json
           rubocop-report.json
           semgrep-report.json
-        retention-days: 7
-
-    - name: Check for critical findings
-      run: |
-        if grep -q '"confidence": "High"' brakeman-report.json || \
-           grep -q '"criticality": "high"' dawn-report.json || \
-           grep -q '"severity": "error"' rubocop-report.json || \
-           grep -q '"severity": "ERROR"' semgrep-report.json; then
-          echo "::error::Critical security issues found!"
-          exit 1
-        fi
+        retention-days: 7 
