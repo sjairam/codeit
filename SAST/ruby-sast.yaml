@@ -23,13 +23,18 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y build-essential libssl-dev libreadline-dev zlib1g-dev libyaml-dev \
-        libpq-dev postgresql postgresql-contrib
+        libpq-dev postgresql postgresql-contrib cmake pkg-config
 
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: '3.2'
         bundler-cache: true
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
 
     - name: Install SAST tools
       run: |
@@ -78,9 +83,47 @@ jobs:
         fi
 
     - name: Run bundle-audit
+      id: bundle-audit
       run: |
         bundle-audit check --update
         bundle-audit check --format json > bundle-audit-report.json
+      continue-on-error: true
+
+    - name: Process Bundle Audit Results
+      if: always()
+      run: |
+        if [ -f bundle-audit-report.json ]; then
+          # Extract vulnerabilities and create GitHub annotations
+          jq -r '.advisories[] | "::warning::\(.title) - \(.description)"' bundle-audit-report.json >> $GITHUB_STEP_SUMMARY
+          
+          # Count vulnerabilities by severity
+          CRITICAL_VULNS=$(jq '.advisories | map(select(.cvss >= 9.0)) | length' bundle-audit-report.json)
+          HIGH_VULNS=$(jq '.advisories | map(select(.cvss >= 7.0 and .cvss < 9.0)) | length' bundle-audit-report.json)
+          MEDIUM_VULNS=$(jq '.advisories | map(select(.cvss >= 4.0 and .cvss < 7.0)) | length' bundle-audit-report.json)
+          LOW_VULNS=$(jq '.advisories | map(select(.cvss < 4.0)) | length' bundle-audit-report.json)
+          
+          # Add summary to step output
+          echo "## Bundle Audit Security Scan Results" >> $GITHUB_STEP_SUMMARY
+          echo "- Critical vulnerabilities: $CRITICAL_VULNS" >> $GITHUB_STEP_SUMMARY
+          echo "- High vulnerabilities: $HIGH_VULNS" >> $GITHUB_STEP_SUMMARY
+          echo "- Medium vulnerabilities: $MEDIUM_VULNS" >> $GITHUB_STEP_SUMMARY
+          echo "- Low vulnerabilities: $LOW_VULNS" >> $GITHUB_STEP_SUMMARY
+          
+          # Set output variables for other steps
+          echo "critical_vulns=$CRITICAL_VULNS" >> $GITHUB_OUTPUT
+          echo "high_vulns=$HIGH_VULNS" >> $GITHUB_OUTPUT
+          echo "medium_vulns=$MEDIUM_VULNS" >> $GITHUB_OUTPUT
+          echo "low_vulns=$LOW_VULNS" >> $GITHUB_OUTPUT
+          
+          # Fail if there are critical or high vulnerabilities
+          if [ "$CRITICAL_VULNS" -gt 0 ] || [ "$HIGH_VULNS" -gt 0 ]; then
+            echo "::error::Found $CRITICAL_VULNS critical and $HIGH_VULNS high severity vulnerabilities"
+            exit 1
+          fi
+        else
+          echo "::error::Bundle audit report not generated"
+          exit 1
+        fi
 
     - name: Run DawnScanner
       run: |
