@@ -11,12 +11,19 @@ on:
 jobs:
   sast-scan:
     name: Run Ruby SAST Scan
-    runs-on: ubuntu-latest
+    runs-on:
+      group: huit-arc
     timeout-minutes: 30
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential libssl-dev libreadline-dev zlib1g-dev libyaml-dev \
+        libpq-dev postgresql postgresql-contrib
 
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
