@@ -114,10 +114,6 @@ echo " --> Copy DEMO"
 cp -R DEMOS /Volumes/Data2024/Documents-$month-20$year/
 sleep $timeSec
 
-# echo " --> Copy GitHub"
-# cp -R GitHub* /Volumes/Data2024/Documents-$month-20$year/
-# sleep $timeSec
-
 echo " --> Copy E*"
 cp -R E* /Volumes/Data2024/Documents-$month-20$year/
 sleep $timeSec
