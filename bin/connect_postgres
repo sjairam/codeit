@@ -1,0 +1,40 @@
+#!/bin/bash
+version=0.1
+
+# Function to display usage
+usage() {
+    echo "Usage: $0 [environment]"
+    echo "Available environments:"
+    echo " lts-pipelines-dev  - Development database"
+    echo " lts-pipelines-qa   - Staging database"
+    echo " lts-pipelines-prod - Production database"
+    exit 1
+}
+
+# Check if environment is provided
+if [ $# -eq 0 ]; then
+    usage
+fi
+
+ENV=$1
+
+# Get database connection string based on environment
+case "$ENV" in
+    "lts-pipelines-dev")
+        DB_CONN="host=lts-pipelines.c8mugnad2b5e.us-east-1.rds.amazonaws.com port=5432 dbname=postgres user=postgres password=bQPvwzfMXKXy7XalhBDeptA7mK"
+        ;;
+    "lts-pipelines-qa")
+        DB_CONN="host=lts-pipelines-qa.cxkgzwuk1cdp.us-east-1.rds.amazonaws.com port=5432 dbname=postgres user=postgres password=dFGj3pQaQugmCsHMbUgy"
+        ;;
+    "lts-pipelines-prod")
+        DB_CONN="host=airflow-db-prod.lib.harvard.edu port=5432 dbname=postgres user=postgres password=WgixrF9#Ywxe3hfDqoURR&hCClBq"
+        ;;
+    *)
+        echo "Error: Unknown environment '$ENV'"
+        usage
+        ;;
+esac
+
+# Connect to the database
+echo "Connecting to $ENV database..."
+psql "$DB_CONN"
