@@ -10,10 +10,10 @@ clear
 
 timeSec=2
 
-echo " => Creating PERS "
-cd ~/Documents/GitHub/
-mkdir PERS
-cd PERS
+echo " => Creating personal "
+cd ~/GITHUB/
+mkdir personal
+cd personal
 
 echo " ==>> Creating repos "
 echo "  --> aws docker   "
