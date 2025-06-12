@@ -1,0 +1,44 @@
+name: Python SAST
+
+# This workflow is triggered whenever a new PR is created on the main branch or there a push to the branch
+# This is a SAST workflow for PYTHON projects
+# Strategy Matrix
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  sast_scan:
+    name: Run Bandit Scan on Python ${{ matrix.python-version }}
+    runs-on:
+      group: huit-arc
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.9, 3.10.6, 3.11, 3.12]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.1.1
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5.0.0
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Bandit
+        run: pip install bandit
+
+      - name: Run Bandit Scan
+        run: bandit -ll -ii -r . -f json -o bandit-report-${{ matrix.python-version }}.json
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4.3.1
+        if: always()
+        with:
+          name: bandit-findings-${{ matrix.python-version }}
+          path: bandit-report-${{ matrix.python-version }}.json
