@@ -21,7 +21,8 @@ then
     mkdir Documents-$month-20$year/01-kube
     mkdir Documents-$month-20$year/02-ssh
     mkdir Documents-$month-20$year/03-shells
-    mkdir Documents-$month-20$year/04-aws
+    mkdir Documents-$month-20$year/04-git
+    mkdir Documents-$month-20$year/05-aws
     mkdir Documents-$month-20$year/Desktop
     mkdir Documents-$month-20$year/Pictures
     mkdir Documents-$month-20$year/Movies
@@ -32,6 +33,13 @@ fi
 
 echo " --> Going to Docs"
 cd ~/Documents
+sleep $timeSec
+
+echo " --> cp git "
+cp -R ~/.gitconfig  /Volumes/Data2024/Documents-$month-20$year/04-git
+cp -R ~/.gitconfig-huit  /Volumes/Data2024/Documents-$month-20$year/04-git
+cp -R ~/.gitconfig-personal  /Volumes/Data2024/Documents-$month-20$year/04-git
+cp -R ~/.gitconfig-work  /Volumes/Data2024/Documents-$month-20$year/04-git
 sleep $timeSec
 
 echo " --> cp shells "
