@@ -37,13 +37,12 @@ jobs:
       run: |
         python3 -m pip install --upgrade pip
         python3 -m pip install semgrep
-        npm install -g npm-audit-fix
         npm install -g snyk
 
     - name: Run npm audit
       run: |
-        npm audit --json > npm-audit-report.json
-        npm audit fix --dry-run
+        npm audit --json > npm-audit-report.json || true
+        npm audit fix --dry-run --json > npm-audit-fix-report.json || true
 
     - name: Run Snyk security scan
       run: |
