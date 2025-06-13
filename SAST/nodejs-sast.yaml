@@ -1,4 +1,4 @@
-name: JavaScript SAST Scan
+name: Nodejs SAST Scan
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
 
 jobs:
   sast-scan:
-    name: Run JavaScript SAST Scan
+    name: Run Nodejs SAST Scan
     runs-on:
       group: huit-arc
     timeout-minutes: 30
@@ -28,30 +28,38 @@ jobs:
     - name: Install dependencies
       run: npm ci
 
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
     - name: Install SAST tools
       run: |
-        python -m pip install semgrep
+        python3 -m pip install --upgrade pip
+        python3 -m pip install semgrep
+        npm install -g npm-audit-fix
         npm install -g snyk
-        npm install -g eslint
-        npm install -g eslint-plugin-security
 
     - name: Run npm audit
       run: |
         npm audit --json > npm-audit-report.json
+        npm audit fix --dry-run
 
     - name: Run Snyk security scan
       run: |
         snyk test --json > snyk-report.json
-
-    - name: Run ESLint with security rules
-      run: |
-        eslint . --ext .js,.jsx,.ts,.tsx --format json --output-file eslint-report.json
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
     - name: Run Semgrep
       run: |
         semgrep --config=p/javascript --config=p/owasp-top-ten \
         --json -o semgrep-report.json \
         --exclude='**/node_modules/**' --exclude='**/dist/**'
+
+    - name: Run ESLint security scan
+      run: |
+        npm run lint -- --format json > eslint-report.json
 
     - name: Upload reports as artifacts
       if: always()
@@ -61,8 +69,8 @@ jobs:
         path: |
           npm-audit-report.json
           snyk-report.json
-          eslint-report.json
           semgrep-report.json
+          eslint-report.json
         retention-days: 7
 
     - name: Check for critical findings
@@ -73,20 +81,20 @@ jobs:
           exit 1
         fi
         
-        # Check Snyk for critical vulnerabilities
+        # Check Snyk for critical issues
         if jq -e '.vulnerabilities[] | select(.severity == "critical")' snyk-report.json; then
           echo "::error::Critical Snyk vulnerabilities found!"
-          exit 1
-        fi
-        
-        # Check ESLint for critical security issues
-        if jq -e '.messages[] | select(.severity == 2 and .ruleId | startswith("security/"))' eslint-report.json; then
-          echo "::error::Critical ESLint security issues found!"
           exit 1
         fi
         
         # Check Semgrep for critical findings
         if jq -e '.results[] | select(.extra.severity == "ERROR")' semgrep-report.json; then
           echo "::error::Critical Semgrep findings detected!"
+          exit 1
+        fi
+        
+        # Check ESLint for critical security issues
+        if jq -e '.messages[] | select(.severity == 2 and .ruleId | startswith("security/"))' eslint-report.json; then
+          echo "::error::Critical ESLint security issues found!"
           exit 1
         fi
