@@ -31,6 +31,9 @@ jobs:
         ruby-version: '3.2'
         bundler-cache: true
 
+    - name: Configure bundle
+      run: bundle config set --local frozen false
+
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
