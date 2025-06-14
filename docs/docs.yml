@@ -1,0 +1,37 @@
+on:
+  push:
+    tags:
+    # - v*.*.*
+    branches:
+      ci-publish-test
+
+jobs:
+  publish-docs:
+    runs-on: [ self-hosted ]
+    name: Publish Docs
+    steps:
+      - name: check out source repository
+        uses: actions/checkout@v4
+
+      - name: Build Image
+        working-directory: docs
+        run: docker build -t sphinx_docs:ci .
+
+      # Provide the confluence secrets in `act.secrets`
+      # for non-automated local publishing without a PAT.
+      # (See README for more information about session id.)
+      # Replace them with these for Github Actions:
+      #           -e CONFLUENCE_SERVER_PAT=${{ secrets.CONFLUENCE_SERVER_PAT }} \
+      #           -e CONFLUENCE_CLOUD_API_TOKEN=${{ secrets.CONFLUENCE_CLOUD_API_TOKEN }} \
+      - name: Publish Docs
+        working-directory: docs
+        run: |
+          docker run --rm -e CONFLUENCE_PUBLISH_DRYRUN=true \
+          -e AUTOAPI_DIRS_JSON='["/opt/sphinx/python/dags", "/opt/sphinx/python/plugins/lts_pipelines"]' \
+          -e CONFLUENCE_SERVER_COOKIES_JSON='{"MOD_AUTH_CAS_S":"${{ secrets.MOD_AUTH_CAS_S }}", "JSESSIONID":"${{ secrets.JSESSIONID }}"}' \
+          -e CONFLUENCE_SERVER_USER='${{ secrets.CONFLUENCE_SERVER_USER }}' \
+          -v $(pwd)/source:/opt/sphinx/source \
+          -v $(pwd)/build:/opt/sphinx/build \
+          -v $(pwd)/../dags:/opt/sphinx/python/dags:ro \
+          -v $(pwd)/../plugins:/opt/sphinx/python/plugins:ro \
+          sphinx_docs:ci make clean confluence
