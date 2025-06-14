@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+          # define what volumes this container should mount
+          volumeMounts:
+            - name: html-volume
+              mountPath: /usr/share/nginx/html
+      # define the volumes that are part of this Pod
+      volumes:
+        - name: html-volume
+          hostPath:
+            path: /data
+            type: Directory
