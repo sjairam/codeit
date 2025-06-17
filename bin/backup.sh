@@ -42,7 +42,6 @@ cp ~/.kube/*.txt /Volumes/Data2024/Documents-$month-20$year/00-kube-shells-00/01
 cp ~/.kube/*.crt /Volumes/Data2024/Documents-$month-20$year/00-kube-shells-00/01-kube
 sleep $timeSec
 
-
 echo " --> cp .ssh "
 cp -R ~/.ssh  /Volumes/Data2024/Documents-$month-20$year/00-kube-shells-00/02-ssh
 sleep $timeSec
@@ -61,11 +60,11 @@ cp -R ~/.gitconfig-work  /Volumes/Data2024/Documents-$month-20$year/00-kube-shel
 sleep $timeSec
 
 echo " --> cp .aws "
-cp -R ~/.aws  /Volumes/Data2024/Documents-$month-20$year/04-aws
+cp -R ~/.aws  /Volumes/Data2024/Documents-$month-20$year/00-kube-shells-00/04-aws
 sleep $timeSec
 
 echo " --> cp passwords "
-cp -R ~/Passwords.kdb*  /Volumes/Data2024/Documents-$month-20$year/
+cp -R ~/Passwords.kdb*  /Volumes/Data2024/Documents-$month-20$year/00-kube-shells-00/
 sleep $timeSec
 
 echo " --> Copying 00-docs"
