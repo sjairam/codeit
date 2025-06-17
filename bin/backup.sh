@@ -36,11 +36,15 @@ echo " --> Going to Docs"
 cd ~/Documents
 sleep $timeSec
 
-echo " --> cp git config "
-cp -R ~/.gitconfig  /Volumes/Data2024/Documents-$month-20$year/00-kube-shells-00/04-git
-cp -R ~/.gitconfig-huit  /Volumes/Data2024/Documents-$month-20$year/00-kube-shells-00/04-git
-cp -R ~/.gitconfig-personal  /Volumes/Data2024/Documents-$month-20$year/00-kube-shells-00/04-git
-cp -R ~/.gitconfig-work  /Volumes/Data2024/Documents-$month-20$year/00-kube-shells-00/04-git
+echo " --> cp .kube config "
+cp -R ~/.kube  /Volumes/Data2024/Documents-$month-20$year/00-kube-shells-00/01-kube
+cp ~/.kube/*.txt /Volumes/Data2024/Documents-$month-20$year/00-kube-shells-00/01-kube
+cp ~/.kube/*.crt /Volumes/Data2024/Documents-$month-20$year/00-kube-shells-00/01-kube
+sleep $timeSec
+
+
+echo " --> cp .ssh "
+cp -R ~/.ssh  /Volumes/Data2024/Documents-$month-20$year/00-kube-shells-00/02-ssh
 sleep $timeSec
 
 echo " --> cp shells "
@@ -49,14 +53,11 @@ cp -R ~/.bashrc  /Volumes/Data2024/Documents-$month-20$year/00-kube-shells-00/03
 cp -R ~/.zshrc  /Volumes/Data2024/Documents-$month-20$year/00-kube-shells-00/03-shells
 sleep $timeSec
 
-echo " --> cp .kube config "
-cp -R ~/.kube  /Volumes/Data2024/Documents-$month-20$year/00-kube-shells-00/01-kube
-cp ~/.kube/*.txt /Volumes/Data2024/Documents-$month-20$year/00-kube-shells-00/01-kube
-cp ~/.kube/*.crt /Volumes/Data2024/Documents-$month-20$year/00-kube-shells-00/01-kube
-sleep $timeSec
-
-echo " --> cp .ssh "
-cp -R ~/.ssh  /Volumes/Data2024/Documents-$month-20$year/00-kube-shells-00/02-ssh
+echo " --> cp git config "
+cp -R ~/.gitconfig  /Volumes/Data2024/Documents-$month-20$year/00-kube-shells-00/04-git
+cp -R ~/.gitconfig-huit  /Volumes/Data2024/Documents-$month-20$year/00-kube-shells-00/04-git
+cp -R ~/.gitconfig-personal  /Volumes/Data2024/Documents-$month-20$year/00-kube-shells-00/04-git
+cp -R ~/.gitconfig-work  /Volumes/Data2024/Documents-$month-20$year/00-kube-shells-00/04-git
 sleep $timeSec
 
 echo " --> cp .aws "
@@ -95,9 +96,9 @@ echo " --> Copying 5-SANDBOX"
 cp -R 5-SAND* /Volumes/Data2024/Documents-$month-20$year/
 sleep $timeSec
 
-echo " --> Copying 6-SANDBOX"
-cp -R 6-SANDBOX* /Volumes/Data2024/Documents-$month-20$year/
-sleep $timeSec
+# echo " --> Copying 6-SANDBOX"
+# cp -R 6-SANDBOX* /Volumes/Data2024/Documents-$month-20$year/
+# sleep $timeSec
 
 echo " --> Copying A*"
 cp -R A* /Volumes/Data2024/Documents-$month-20$year/
