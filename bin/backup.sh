@@ -95,10 +95,6 @@ echo " --> Copying 5-SANDBOX"
 cp -R 5-SAND* /Volumes/Data2024/Documents-$month-20$year/
 sleep $timeSec
 
-# echo " --> Copying 6-SANDBOX"
-# cp -R 6-SANDBOX* /Volumes/Data2024/Documents-$month-20$year/
-# sleep $timeSec
-
 echo " --> Copying A*"
 cp -R A* /Volumes/Data2024/Documents-$month-20$year/
 sleep $timeSec
@@ -125,6 +121,10 @@ sleep $timeSec
 
 echo " --> Copy E*"
 cp -R E* /Volumes/Data2024/Documents-$month-20$year/
+sleep $timeSec
+
+echo " --> Copy F*"
+cp -R F* /Volumes/Data2024/Documents-$month-20$year/
 sleep $timeSec
 
 echo " --> Copy GRA*"
@@ -244,9 +244,8 @@ cp -R HAR* /Volumes/Data2024/Documents-$month-20$year/Movies
 sleep $timeSec
 
 echo " --> Going to HUMOUR"
-cp -R HUMOUR* /Volumes/Data2024/Documents-$month-20$year/Movies
+cp -R HUM* /Volumes/Data2024/Documents-$month-20$year/Movies
 sleep $timeSec
-
 
 echo " --> Going to LEARNING"
 cp -R LEARNING* /Volumes/Data2024/Documents-$month-20$year/Movies
