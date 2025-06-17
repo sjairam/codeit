@@ -18,11 +18,12 @@ DOCCO='Documents-$month-20$year'
 if [ ! -d ${DOCCO} ]; 
 then
     mkdir Documents-$month-20$year
-    mkdir Documents-$month-20$year/01-kube
-    mkdir Documents-$month-20$year/02-ssh
-    mkdir Documents-$month-20$year/03-shells
-    mkdir Documents-$month-20$year/04-git
-    mkdir Documents-$month-20$year/05-aws
+    mkdir Documents-$month-20$year/00-kube-shells-00
+    mkdir Documents-$month-20$year/00-kube-shells-00/01-kube
+    mkdir Documents-$month-20$year/00-kube-shells-00/02-ssh
+    mkdir Documents-$month-20$year/00-kube-shells-00/03-shells
+    mkdir Documents-$month-20$year/00-kube-shells-00/04-git
+    mkdir Documents-$month-20$year/00-kube-shells-00/05-aws
     mkdir Documents-$month-20$year/Desktop
     mkdir Documents-$month-20$year/Pictures
     mkdir Documents-$month-20$year/Movies
@@ -35,27 +36,27 @@ echo " --> Going to Docs"
 cd ~/Documents
 sleep $timeSec
 
-echo " --> cp git "
-cp -R ~/.gitconfig  /Volumes/Data2024/Documents-$month-20$year/04-git
-cp -R ~/.gitconfig-huit  /Volumes/Data2024/Documents-$month-20$year/04-git
-cp -R ~/.gitconfig-personal  /Volumes/Data2024/Documents-$month-20$year/04-git
-cp -R ~/.gitconfig-work  /Volumes/Data2024/Documents-$month-20$year/04-git
+echo " --> cp git config "
+cp -R ~/.gitconfig  /Volumes/Data2024/Documents-$month-20$year/00-kube-shells-00/04-git
+cp -R ~/.gitconfig-huit  /Volumes/Data2024/Documents-$month-20$year/00-kube-shells-00/04-git
+cp -R ~/.gitconfig-personal  /Volumes/Data2024/Documents-$month-20$year/00-kube-shells-00/04-git
+cp -R ~/.gitconfig-work  /Volumes/Data2024/Documents-$month-20$year/00-kube-shells-00/04-git
 sleep $timeSec
 
 echo " --> cp shells "
-cp -R ~/.aliases  /Volumes/Data2024/Documents-$month-20$year/03-shells
-cp -R ~/.bashrc  /Volumes/Data2024/Documents-$month-20$year/03-shells
-cp -R ~/.zshrc  /Volumes/Data2024/Documents-$month-20$year/03-shells
+cp -R ~/.aliases  /Volumes/Data2024/Documents-$month-20$year/00-kube-shells-00/03-shells
+cp -R ~/.bashrc  /Volumes/Data2024/Documents-$month-20$year/00-kube-shells-00/03-shells
+cp -R ~/.zshrc  /Volumes/Data2024/Documents-$month-20$year/00-kube-shells-00/03-shells
 sleep $timeSec
 
-echo " --> cp .kube "
-cp -R ~/.kube  /Volumes/Data2024/Documents-$month-20$year/01-kube
-cp ~/.kube/*.txt /Volumes/Data2024/Documents-$month-20$year/01-kube
-cp ~/.kube/*.crt /Volumes/Data2024/Documents-$month-20$year/01-kube
+echo " --> cp .kube config "
+cp -R ~/.kube  /Volumes/Data2024/Documents-$month-20$year/00-kube-shells-00/01-kube
+cp ~/.kube/*.txt /Volumes/Data2024/Documents-$month-20$year/00-kube-shells-00/01-kube
+cp ~/.kube/*.crt /Volumes/Data2024/Documents-$month-20$year/00-kube-shells-00/01-kube
 sleep $timeSec
 
 echo " --> cp .ssh "
-cp -R ~/.ssh  /Volumes/Data2024/Documents-$month-20$year/02-ssh
+cp -R ~/.ssh  /Volumes/Data2024/Documents-$month-20$year/00-kube-shells-00/02-ssh
 sleep $timeSec
 
 echo " --> cp .aws "
