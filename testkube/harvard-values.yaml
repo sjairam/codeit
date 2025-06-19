@@ -236,7 +236,7 @@ testkube-cloud-api:
           - /
     tls:
       - hosts:
-          - testkube-api.example.com
+          - testkube-api.lib.harvard.edu
         secretName: testkube-enterprise-api-tls
 ## Testkube Cloud UI chart parameters
 testkube-cloud-ui:
@@ -718,4 +718,3 @@ dex:
   # -- Enable a [pod distruption budget](https://kubernetes.io/docs/tasks/run-application/configure-pdb/) to help dealing with [disruptions](https://kubernetes.io/docs/concepts/workloads/pods/disruptions/).
 image:
   tag: 2.3.3
-
