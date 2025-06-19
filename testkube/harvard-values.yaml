@@ -9,6 +9,7 @@ global:
     # -- Certificate Issuer ref (only used if `provider` is set to `cert-manager`)
     issuerRef: 'cert-manager'
   labels: &common_labels {}
+  domain: 'lib.harvard.edu'  
   ## Global MongoDB configuration for Testkube Pro
   mongo: &global_mongo_config
     dsn: 'mongodb://mongo-qa-3.lts.harvard.edu:27017' # -- Mongo DSN connection string
@@ -231,7 +232,7 @@ testkube-cloud-api:
     enabled: true
     className: nginx
     hosts:
-      - host: testkube-api.example.com
+      - host: testkube-api.lib.harvard.edu
         paths:
           - /
     tls:
