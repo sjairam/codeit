@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 # Connect to Harvard broker server
 # Usage: ./connect_broker [options]
 # Options:
@@ -8,7 +9,7 @@
 
 set -euo pipefail
 
-# Configuration
+## Configuration
 SSH_KEY="$HOME/.ssh/id_202503Harvard"
 SSH_USER="ec2-user"
 SSH_HOST="10.37.23.227"
