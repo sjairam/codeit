@@ -147,6 +147,10 @@ echo " --> Copy K*"
 cp -R K* /Volumes/Data2024/Documents-$month-20$year/
 sleep $timeSec
 
+echo " --> Copy L*"
+cp -R L* /Volumes/Data2024/Documents-$month-20$year/
+sleep $timeSec
+
 echo " --> Copy N*"
 cp -R N* /Volumes/Data2024/Documents-$month-20$year/
 sleep $timeSec
