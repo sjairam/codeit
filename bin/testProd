@@ -35,7 +35,6 @@ websites=(
     "https://drsmdsrv.lib.harvard.edu/drs_metadata/rest/heartbeat"
     "https://drsmqsrv-prod.lib.harvard.edu/drs2_activemq/rest/heartbeat"
     "https://eadchecker.lib.harvard.edu/"
-
     "https://embed.lib.harvard.edu"
     "https://fts.lib.harvard.edu/fts/"
     "https://hollisarchives.lib.harvard.edu"
@@ -51,6 +50,7 @@ websites=(
     "https://nrs.lib.harvard.edu/api/lookup/urn-3:fhcl:24851885"
     "https://policyadmin.lib.harvard.edu/policy/servlet/admin"
     "https://pds.lib.harvard.edu/pds"
+    "https://sds.lib.harvard.edu/sds/audio/454933378"
     "https://secureexit.lib.harvard.edu/readinesscheck"
     "https://sharedshelflinker.lib.harvard.edu/sharedshelf/resolve/123"
     "https://tools.lib.harvard.edu/hdforms/retrieval"
