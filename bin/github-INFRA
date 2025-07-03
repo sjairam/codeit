@@ -18,165 +18,169 @@ cd APPS-INFRA
 
 echo " --> A to L"
 
-echo "Cloning ACORN-INFRA..."
+echo " --> ACORN-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/ACORN-INFRA.git
 sleep $timeSec
 
-echo "Cloning application-INFRA..."
+echo " --> application-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/application-INFRA.git
 sleep $timeSec
 
-echo "Cloning aqueduct-INFRA..."
+echo " --> aqueduct-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/aqueduct-INFRA.git
 sleep $timeSec
 
-echo "Cloning archecker-INFRA..."
+echo " --> archecker-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/archecker-INFRA.git
 sleep $timeSec
 
-echo "Cloning argoCD-INFRA..."
+echo " --> argoCD-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/argoCD-INFRA.git
 sleep $timeSec
 
-echo "Cloning aspace-INFRA..."
+echo " --> aspace-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/aspace-INFRA.git
 sleep $timeSec
 
-echo "Cloning bibdatalookup-INFRA..."
+echo " --> bibdatalookup-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/bibdatalookup-INFRA.git
 sleep $timeSec
 
-echo "Cloning booklabeler-INFRA..."
+echo " --> booklabeler-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/booklabeler-INFRA.git
 sleep $timeSec
 
-echo "Cloning collex-INFRA..."
+echo " --> collex-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/collex-INFRA.git
 sleep $timeSec
 
-echo "Cloning curiosity-INFRA..."
+echo " --> curiosity-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/curiosity-INFRA.git
 sleep $timeSec
 
-echo "Cloning DAIS-INFRA..."
+echo " --> DAIS-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/DAIS-INFRA.git
 sleep $timeSec
 
-echo "Cloning DRS2-INFRA..."
+echo " --> DRS2-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/DRS2-INFRA.git
 sleep $timeSec
 
-echo "Cloning devsecops-INFRA..."
+echo " --> devsecops-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/devsecops-INFRA.git
 sleep $timeSec
 
-echo "Cloning ebookplate-INFRA..."
+echo " --> ebookplate-INFRA..."
 git clone github.huit.harvard.edu/LTS/ebookplate-INFRA
 sleep $timeSec
 
-echo "Cloning eda-INFRA..."
+echo " --> eda-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/eda-INFRA.git
 sleep $timeSec
 
-echo "Cloning etds-INFRA..."
+echo " --> etds-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/etds-INFRA.git
 sleep $timeSec
 
-echo "Cloning fts-INFRA..."
+echo " --> fts-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/fts-INFRA.git
 sleep $timeSec
 
-echo "Cloning HDForms-INFRA..."
+echo " --> HDForms-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/HDForms-INFRA.git
 sleep $timeSec
 
-echo "Cloning hgl-INFRA..."
+echo " --> hgl-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/hgl-INFRA.git
 sleep $timeSec
 
-echo "Cloning IDS-INFRA..."
+echo " --> IDS-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/IDS-INFRA.git
 sleep $timeSec
 
-echo "Cloning imgconv-INFRA..."
+echo " --> imgconv-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/imgconv-INFRA.git
 sleep $timeSec
 
-echo "Cloning IvyPlusPod-INFRA..."
+echo " --> IvyPlusPod-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/IvyPlusPod-INFRA.git
 sleep $timeSec
 
-echo "Cloning jobmonitor-INFRA..."
+echo " --> jobmonitor-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/jobmonitor-INFRA.git
 sleep $timeSec
 
-echo "Cloning JSTOR-INFRA..."
+echo " --> JSTOR-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/JSTOR-INFRA.git
 sleep $timeSec
 
-echo "Cloning LibraryCloud-INFRA..."
+echo " --> LibraryCloud-INFRA..."
 git clone github.huit.harvard.edu/LTS/LibraryCloud-INFRA
 sleep $timeSec
 
-echo "Cloning LISTVIEW-INFRA..."
+echo " --> LISTVIEW-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/LISTVIEW-INFRA.git
 sleep $timeSec
 
-echo "Cloning lts-pipelines-INFRA..."
+echo " --> lts-pipelines-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/lts-pipelines-INFRA.git
 sleep $timeSec
 
 echo " --> M to Z"
 
-echo "Cloning mds-INFRA..."
+echo " --> mds-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/mds-INFRA.git
 sleep $timeSec
 
-echo "Cloning mps-INFRA..."
+echo " --> mps-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/mps-INFRA.git
 sleep $timeSec
 
-echo "Cloning mpsadm-INFRA..."
+echo " --> mpsadm-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/mpsadm-INFRA.git
 sleep $timeSec
 
-echo "Cloning nrs-INFRA..."
+echo " --> Murner-INFRA..."
+git clone git@github.huit.harvard.edu:LTS/Murner-INFRA.git
+sleep $timeSec
+
+echo " --> nrs-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/nrs-INFRA.git
 sleep $timeSec
 
-echo "Cloning nrsadm-INFRA..."
+echo " --> nrsadm-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/nrsadm-INFRA.git
 sleep $timeSec
 
-echo "Cloning olivia-INFRA..."
+echo " --> olivia-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/olivia-INFRA.git
 sleep $timeSec
 
-echo "Cloning OCFL-Validator-Infra..."
+echo " --> OCFL-Validator-Infra..."
 git clone git@github.huit.harvard.edu:LTS/OCFL-Validator-Infra.git
 sleep $timeSec
 
-echo "Cloning policy-INFRA..."
+echo " --> policy-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/policy-INFRA.git
 sleep $timeSec
 
-echo "Cloning post-drs-messaging-INFRA..."
+echo " --> post-drs-messaging-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/post-drs-messaging-INFRA.git
 sleep $timeSec
 
-echo "Cloning presto-INFRA..."
+echo " --> presto-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/presto-INFRA.git
 sleep $timeSec
 
-echo "Cloning solr-INFRA..."
+echo " --> solr-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/solr-INFRA.git
 sleep $timeSec
 
-echo "Cloning SDS-and-Wowza-INFRA..."
+echo " --> SDS-and-Wowza-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/SDS-and-Wowza-INFRA.git
 sleep $timeSec
 
-echo "Cloning viewer-INFRA..."
+echo " --> viewer-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/viewer-INFRA.git
 sleep $timeSec
 
