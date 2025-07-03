@@ -35,7 +35,7 @@ websites=(
     "https://drsmdsrv.lib.harvard.edu/drs_metadata/rest/heartbeat"
     "https://drsmqsrv-prod.lib.harvard.edu/drs2_activemq/rest/heartbeat"
     "https://eadchecker.lib.harvard.edu/"
-    "https://eda.lib.harvard.edu"
+
     "https://embed.lib.harvard.edu"
     "https://fts.lib.harvard.edu/fts/"
     "https://hollisarchives.lib.harvard.edu"
