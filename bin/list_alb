@@ -1,7 +1,10 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
+
 # 01 - initial - jairams
 # 02 - Add AWS CLI check
 # 03 - Add color output
+# 04 - Improvements: strict mode, better checks, profile/region support, help
 
 # Colors for output
 RED='\033[0;31m'
@@ -9,22 +12,46 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-AWS=$(command -v aws)
+usage() {
+    echo -e "${YELLOW}Usage: $0 [-p profile] [-r region]\n" \
+        "  -p profile   AWS CLI profile to use (optional)" \
+        "  -r region    AWS region to use (optional)" \
+        "  -h           Show this help message${NC}"
+}
 
-if [ ! -f "${AWS}" ]; then
-    echo -e "${RED}ERROR: The aws binary does not exist.${NC}"
-    echo -e "${YELLOW}FIX: Please modify the \${AWS} variable in the program header.${NC}"
+PROFILE=""
+REGION=""
+while getopts ":p:r:h" opt; do
+  case $opt in
+    p) PROFILE="--profile $OPTARG" ;;
+    r) REGION="--region $OPTARG" ;;
+    h) usage; exit 0 ;;
+    *) usage; exit 1 ;;
+  esac
+done
+
+if ! command -v aws >/dev/null 2>&1; then
+    echo -e "${RED}ERROR: AWS CLI is not installed or not in PATH.${NC}"
     exit 1
 fi
 
 # List all load balancers and get their names and ARNs
 echo -e "${YELLOW}Fetching Application Load Balancers...${NC}"
-load_balancers=$(aws elbv2 describe-load-balancers --query "LoadBalancers[?Type=='application'].{Name:LoadBalancerName, ARN:LoadBalancerArn}" --output text --output table)
+if ! load_balancers=$(aws elbv2 describe-load-balancers $PROFILE $REGION \
+    --query "LoadBalancers[?Type=='application'].{Name:LoadBalancerName, ARN:LoadBalancerArn}" \
+    --output table 2>/dev/null); then
+    echo -e "${RED}ERROR: Failed to fetch load balancers. Check your AWS credentials and permissions.${NC}"
+    exit 2
+fi
 
 # Check if there are any ALBs found
-if [ -z "$load_balancers" ]; then
+if [[ -z "$load_balancers" || "$load_balancers" =~ "No Load Balancers found" ]]; then
     echo -e "${YELLOW}No Application Load Balancers found.${NC}"
 else
     echo -e "${GREEN}Application Load Balancers:${NC}"
     echo "$load_balancers"
+    # Count the number of ALBs
+    alb_count=$(aws elbv2 describe-load-balancers $PROFILE $REGION \
+        --query "length(LoadBalancers[?Type=='application'])" --output text 2>/dev/null)
+    echo -e "${YELLOW}Total Application Load Balancers: $alb_count${NC}"
 fi
