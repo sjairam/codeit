@@ -55,6 +55,7 @@ websites=(
     "https://listview-dev.lib.harvard.edu"
     "https://lts-pipelines-dev.lib.harvard.edu/airflow"
     "https://mps-dev.lib.harvard.edu/iiif/2/URN-3:HUL.OIS:101114808"
+    "https://murner-dev.lib.harvard.edu/api/healthcheck"
     "https://nrs-dev.lib.harvard.edu/healthcheck"
     "https://nrsadmin-dev.lib.harvard.edu/resources/search/advanced"
     "https://olivia-dev.lib.harvard.edu/olivia/servlet/OliviaServlet"
