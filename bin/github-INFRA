@@ -71,7 +71,7 @@ git clone git@github.huit.harvard.edu:LTS/devsecops-INFRA.git
 sleep $timeSec
 
 echo " --> ebookplate-INFRA..."
-git clone github.huit.harvard.edu/LTS/ebookplate-INFRA
+git clone git@github.huit.harvard.edu:LTS/ebookplate-INFRA.git
 sleep $timeSec
 
 echo " --> eda-INFRA..."
@@ -80,6 +80,10 @@ sleep $timeSec
 
 echo " --> etds-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/etds-INFRA.git
+sleep $timeSec
+
+echo " --> fal-small-images-gaetway-INFRA..."
+git clone git@github.huit.harvard.edu:LTS/fal-small-images-gateway-INFRA.git
 sleep $timeSec
 
 echo " --> fts-INFRA..."
@@ -115,7 +119,7 @@ git clone git@github.huit.harvard.edu:LTS/JSTOR-INFRA.git
 sleep $timeSec
 
 echo " --> LibraryCloud-INFRA..."
-git clone github.huit.harvard.edu/LTS/LibraryCloud-INFRA
+git clone git@github.huit.harvard.edu:LTS/LibraryCloud-INFRA.git
 sleep $timeSec
 
 echo " --> LISTVIEW-INFRA..."
