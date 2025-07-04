@@ -1,7 +1,6 @@
 #!/bin/bash
-
-# Helm List Script
-# Outputs formatted results of helm list -A with summary statistics
+# Initial version: SJ 001 - Find the software deployed in cluster
+# 0.2 - Change the output to a detailed table
 
 set -e
 
@@ -21,56 +20,59 @@ print_header() {
     echo
 }
 
-# Function to print table header
-print_table_header() {
+# Function to format helm output as a proper table
+format_helm_table() {
+    local temp_file="$1"
+    
+    # Print table header
     echo "| NAME | NAMESPACE | REVISION | STATUS | CHART | APP VERSION | UPDATED |"
     echo "|------|-----------|----------|--------|-------|-------------|---------|"
+    
+    # Process each line and format as markdown table
+    tail -n +2 "$temp_file" | while IFS=$'\t' read -r name namespace revision status chart app_version updated; do
+        if [[ -n "$name" ]]; then
+            # Escape any pipes in the data to prevent table formatting issues
+            name=$(echo "$name" | sed 's/|/\\|/g')
+            namespace=$(echo "$namespace" | sed 's/|/\\|/g')
+            chart=$(echo "$chart" | sed 's/|/\\|/g')
+            app_version=$(echo "$app_version" | sed 's/|/\\|/g')
+            updated=$(echo "$updated" | sed 's/|/\\|/g')
+            
+            echo "| $name | $namespace | $revision | $status | $chart | $app_version | $updated |"
+        fi
+    done
 }
 
 # Function to print summary
 print_summary() {
+    local total_releases="$1"
+    local unique_namespaces="$2"
+    
     echo
     echo -e "${GREEN}## Summary${NC}"
     echo -e "- **Total Releases**: $total_releases"
     echo -e "- **Namespaces**: $unique_namespaces"
-    echo -e "- **All Status**: deployed"
     echo
 }
 
-# Function to print namespace breakdown
-print_namespace_breakdown() {
-    echo -e "${GREEN}## Namespace Breakdown${NC}"
-    
-    # Count releases per namespace
-    declare -A namespace_counts
-    while IFS=$'\t' read -r name namespace revision status chart app_version updated; do
-        if [[ -n "$namespace" && "$namespace" != "NAMESPACE" ]]; then
-            ((namespace_counts["$namespace"]++))
-        fi
-    done < <(helm list -A --output table | tail -n +2)
-    
-    # Sort namespaces by count (descending)
-    for namespace in "${!namespace_counts[@]}"; do
-        echo "$namespace:${namespace_counts[$namespace]}"
-    done | sort -t: -k2 -nr | while IFS=: read -r namespace count; do
-        echo -e "- **$namespace**: $count release$([ $count -ne 1 ] && echo "s")"
-    done
-    
-    echo
-}
+
 
 # Function to print individual namespace details
 print_namespace_details() {
+    local temp_file="$1"
+    
     echo -e "${GREEN}## Namespace Details${NC}"
     
     # Get unique namespaces
-    namespaces=$(helm list -A --output table | tail -n +2 | cut -f2 | sort -u)
+    namespaces=$(tail -n +2 "$temp_file" | cut -f2 | sort -u)
     
     for namespace in $namespaces; do
         if [[ -n "$namespace" ]]; then
             echo -e "${YELLOW}### $namespace${NC}"
-            helm list -n "$namespace" --output table | tail -n +2 | while IFS=$'\t' read -r name ns revision status chart app_version updated; do
-                if [[ -n "$name" ]]; then
+            
+            # Get releases for this namespace
+            tail -n +2 "$temp_file" | while IFS=$'\t' read -r name ns revision status chart app_version updated; do
+                if [[ "$ns" == "$namespace" && -n "$name" ]]; then
                     echo -e "  - $name ($chart v$app_version) - $status"
                 fi
             done
@@ -78,6 +80,8 @@ print_namespace_details() {
         fi
     done
 }
+
+
 
 # Main execution
 main() {
@@ -87,20 +91,25 @@ main() {
     temp_file=$(mktemp)
     helm list -A --output table > "$temp_file"
     
-    # Print the table
-    print_table_header
-    tail -n +2 "$temp_file"
+    # Check if we have any releases
+    if [[ $(tail -n +2 "$temp_file" | wc -l) -eq 0 ]]; then
+        echo -e "${YELLOW}No Helm releases found in any namespace.${NC}"
+        rm -f "$temp_file"
+        return 0
+    fi
+    
+    # Print the formatted table
+    format_helm_table "$temp_file"
     
     # Calculate statistics
     total_releases=$(tail -n +2 "$temp_file" | wc -l)
     unique_namespaces=$(tail -n +2 "$temp_file" | cut -f2 | sort -u | wc -l)
     
-    print_summary
-    print_namespace_breakdown
+    print_summary "$total_releases" "$unique_namespaces"
     
     # Optional: Print detailed breakdown by namespace
     if [[ "${1:-}" == "--detailed" ]]; then
-        print_namespace_details
+        print_namespace_details "$temp_file"
     fi
     
     # Cleanup
@@ -124,4 +133,5 @@ if ! helm list -A --output table &> /dev/null; then
 fi
 
 # Run the script
-main "$@" 
+main "$@"
+
