@@ -9,15 +9,57 @@ import (
 	"strings"
 )
 
-// Try add common usage function
+// Improved usage function with better formatting and examples
 func usage() {
-	fmt.Println(" This program utilises Go.  It shall also doa a pre-check for Go")
-	fmt.Println(" The current usage is incorrect.  Please see example input parameters below")
-	fmt.Println(" Please provider the database engine type, options are 'mysql' or 'oracle-ee' or 'postgres'.")
+	fmt.Println("=" + strings.Repeat("=", 60))
+	fmt.Println("                    RDS Instance Lister")
+	fmt.Println("=" + strings.Repeat("=", 60))
+	fmt.Println()
+	fmt.Println("DESCRIPTION:")
+	fmt.Println("  This program lists AWS RDS instances by database engine type.")
+	fmt.Println("  It requires Go to be installed and AWS CLI to be configured.")
+	fmt.Println()
+	fmt.Println("USAGE:")
+	fmt.Println("  go run list_rds.go <database-engine>")
+	fmt.Println("  ./list_rds <database-engine>")
+	fmt.Println()
+	fmt.Println("ARGUMENTS:")
+	fmt.Println("  database-engine    The type of database engine to list")
+	fmt.Println("                     Valid options: mysql, postgres, oracle-ee")
+	fmt.Println()
+	fmt.Println("EXAMPLES:")
+	fmt.Println("  go run list_rds.go postgres")
+	fmt.Println("  go run list_rds.go mysql")
+	fmt.Println("  go run list_rds.go oracle-ee")
+	fmt.Println()
+	fmt.Println("FLAGS:")
+	fmt.Println("  -h, --help         Show this help message")
+	fmt.Println()
+	fmt.Println("PREREQUISITES:")
+	fmt.Println("  - Go must be installed and in PATH")
+	fmt.Println("  - AWS CLI must be installed and configured")
+	fmt.Println("  - AWS credentials must have RDS read permissions")
+	fmt.Println()
+	fmt.Println("OUTPUT:")
+	fmt.Println("  Displays a table with the following columns:")
+	fmt.Println("  - DBInstanceIdentifier")
+	fmt.Println("  - DBInstanceClass")
+	fmt.Println("  - Engine")
+	fmt.Println("  - EngineVersion")
+	fmt.Println("  - DBInstanceStatus")
+	fmt.Println("  - AllocatedStorage")
+	fmt.Println("  - MultiAZ")
+	fmt.Println()
+	fmt.Println("=" + strings.Repeat("=", 60))
 	os.Exit(1)
 }
 
 func main() {
+	// Check for help flag
+	if len(os.Args) > 1 && (os.Args[1] == "--help" || os.Args[1] == "-h") {
+		usage()
+	}
+
 	//Check if GO installed
 	goPath, err := exec.LookPath("go")
 	if err != nil {
@@ -31,10 +73,22 @@ func main() {
 		usage()
 	}
 
-	engine := os.Args[1]
-	if engine != "postgres" && engine != "mysql" && engine != "oracle-ee" {
+	engine := strings.ToLower(os.Args[1])
+	validEngines := []string{"postgres", "mysql", "oracle-ee"}
+
+	engineValid := false
+	for _, validEngine := range validEngines {
+		if engine == validEngine {
+			engineValid = true
+			break
+		}
+	}
+
+	if !engineValid {
+		fmt.Printf("ERROR: Invalid database engine '%s'\n", os.Args[1])
+		fmt.Printf("Valid options are: %s\n", strings.Join(validEngines, ", "))
+		fmt.Println()
 		usage()
-		os.Exit(1)
 	}
 
 	// Check if AWS CLI is installed
@@ -62,15 +116,20 @@ func main() {
 		os.Exit(1)
 	}
 
-	// TEST HEADINGS
-	// fmt.Println("  Database       ||    InstanceId      ||  InstalceClass")
 	rdsInstances := strings.TrimSpace(out.String())
 
 	// Check if any RDS instances of specified engine are found
 	if rdsInstances == "" {
-		fmt.Printf("No %s RDS instances found.\n", engine)
+		fmt.Printf("No %s RDS instances found in the current AWS region.\n", strings.Title(engine))
+		fmt.Println("This could mean:")
+		fmt.Println("  - No instances of this engine type exist")
+		fmt.Println("  - AWS credentials don't have sufficient permissions")
+		fmt.Println("  - You're in the wrong AWS region")
+		fmt.Println("  - AWS CLI is not properly configured")
 	} else {
-		fmt.Printf("%s RDS Instances:\n", strings.Title(engine))
+		fmt.Printf("\n%s RDS Instances Found:\n", strings.Title(engine))
+		fmt.Println(strings.Repeat("-", 80))
 		fmt.Println(rdsInstances)
+		fmt.Println(strings.Repeat("-", 80))
 	}
 }
