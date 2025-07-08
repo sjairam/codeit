@@ -184,6 +184,10 @@ echo " --> SDS-and-Wowza-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/SDS-and-Wowza-INFRA.git
 sleep $timeSec
 
+echo " --> Secureexit-INFRA..."
+git clone git@github.huit.harvard.edu:LTS/secureexit-INFRA.git
+sleep $timeSec
+
 echo " --> viewer-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/viewer-INFRA.git
 sleep $timeSec
