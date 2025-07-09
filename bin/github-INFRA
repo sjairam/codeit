@@ -192,6 +192,11 @@ echo " --> viewer-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/viewer-INFRA.git
 sleep $timeSec
 
+echo " --> whistle-INFRA..."
+git clone git@github.huit.harvard.edu:LTS/Whistle-INFRA.git
+sleep $timeSec
+
+
 end_time=$(date +%s)
 
 elapsed_time=$(( end_time - start_time ))
