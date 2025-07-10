@@ -199,6 +199,10 @@ echo " ###>> Going to Pictures"
 cd ~/Pictures
 sleep $timeSec
 
+echo " --> Copy 00-BOYZ
+cp -R 00-BOY* /Volumes/Data2024/Documents-$month-20$year/Pictures
+sleep $timeSec
+
 echo " --> Copy 00-oteemo"
 cp -R 00-oteemo* /Volumes/Data2024/Documents-$month-20$year/Pictures
 sleep $timeSec
