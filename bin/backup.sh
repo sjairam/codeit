@@ -75,8 +75,8 @@ echo " --> Copying 00-personal"
 cp -R 00-personal-00 /Volumes/Data2024/Documents-$month-20$year/
 sleep $timeSec
 
-echo " --> Copying 00-USEFUL
-cp -R 00-USEFUL /Volumes/Data2024/Documents-$month-20$year/
+echo " --> Copying 00-USEFUL"
+cp -R 00-USEFUL* /Volumes/Data2024/Documents-$month-20$year/
 sleep $timeSec
 
 echo " --> Copying 1-PROD*"
