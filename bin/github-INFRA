@@ -34,6 +34,10 @@ echo " --> archecker-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/archecker-INFRA.git
 sleep $timeSec
 
+echo " --> arclight-INFRA..."
+git clone https://github.huit.harvard.edu/LTS/arclight-INFRA
+sleep $timeSec
+
 echo " --> argoCD-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/argoCD-INFRA.git
 sleep $timeSec
