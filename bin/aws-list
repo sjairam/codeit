@@ -22,6 +22,7 @@ if ! aws sts get-caller-identity --output text >/dev/null 2>&1; then
 fi
 
 REGION=""
+REGION_ARG=()
 # Parse arguments
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -41,7 +42,6 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-REGION_ARG=()
 if [ -n "$REGION" ]; then
     REGION_ARG=(--region "$REGION")
 fi
@@ -49,7 +49,7 @@ fi
 echo "Listing all running EC2 instances with InstanceID, Name, State, and Private IP..." >&2
 
 if ! aws ec2 describe-instances \
-    "${REGION_ARG[@]}" \
+    "${REGION_ARG[@]:-}" \
     --filters "Name=instance-state-name,Values=running" \
     --query 'Reservations[*].Instances[*].{InstanceID:InstanceId, Name:Tags[?Key==`Name`].Value | [0], State:State.Name, PrivateIP:PrivateIpAddress}' \
     --output table; then
