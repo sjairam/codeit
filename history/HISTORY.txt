@@ -1,7 +1,10 @@
 JULY 2025
 ---------
+20250715 - Upgrade Rancher LZP to 2.11.0 - LZProd
+20250715 - Upgrade LZP to 1.32.5 - LZProd
 20250715 - Upgrade Rancher PROD to 2.11.2 - PROD 
 
+20250710 - Upgrade Prod to 1.32.5 - PROD
 20250710 - Upgrade Libmonitor MySQL - PROD
 20250710 - Upgrade LibraryCloud collection MySQL - PROD
 
