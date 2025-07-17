@@ -1,5 +1,8 @@
 JULY 2025
 ---------
+20250717 - Increased report0 to 6000 GB - PROD
+20250716 - Upgrade Rancher LZP to 2.11.2 - LZProd
+
 20250715 - Upgrade Rancher LZP to 2.11.0 - LZProd
 20250715 - Upgrade LZP to 1.32.5 - LZProd
 20250715 - Upgrade Rancher PROD to 2.11.2 - PROD 
