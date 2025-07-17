@@ -35,7 +35,7 @@ git clone git@github.huit.harvard.edu:LTS/archecker-INFRA.git
 sleep $timeSec
 
 echo " --> arclight-INFRA..."
-git clone https://github.huit.harvard.edu/LTS/arclight-INFRA
+git clone git@github.huit.harvard.edu:LTS/arclight-INFRA.git
 sleep $timeSec
 
 echo " --> argoCD-INFRA..."
@@ -138,6 +138,10 @@ echo " --> M to Z"
 
 echo " --> mds-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/mds-INFRA.git
+sleep $timeSec
+
+echo " --> metadata-INFRA..."
+git clone git@github.huit.harvard.edu:LTS/metadata-operational-INFRA.git
 sleep $timeSec
 
 echo " --> mps-INFRA..."
