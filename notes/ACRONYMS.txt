@@ -1,0 +1,25 @@
+
+ALB - AWS Load Balancer
+BOM - Bill of Materials
+CI - Continous Integration
+CD - Continous Delivery
+CLI - Command Line Interface
+CRD - Custom Resource Definition
+
+EBS - Elastic Block Storage (AWS)
+ESO - External Secrets Operator
+GHA - GitHub Actions
+
+K8s - Kubernetes 
+NS  - Namespace
+OIDC - OpenId Connect (on top of OAuth)
+
+PLG - Prometheus Loki Grafana
+
+SAST - Static Application Security Testing 
+SCA - Software Composition Analysis
+SVC - Service 
+
+SDK - Software Development Kit
+UI - User Interface
+VS - Virtual Service
