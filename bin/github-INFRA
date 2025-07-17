@@ -26,6 +26,10 @@ echo " --> application-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/application-INFRA.git
 sleep $timeSec
 
+echo " --> alma sync" 
+git clone git@github.huit.harvard.edu:LTS/alma-d-sync-INFRA.git
+sleep $timeSec
+
 echo " --> aqueduct-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/aqueduct-INFRA.git
 sleep $timeSec
@@ -203,7 +207,6 @@ sleep $timeSec
 echo " --> whistle-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/Whistle-INFRA.git
 sleep $timeSec
-
 
 end_time=$(date +%s)
 
