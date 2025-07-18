@@ -1,16 +1,18 @@
 
-ALB - AWS Load Balancer
+ALB - Application Load Balancer
 BOM - Bill of Materials
-CI - Continous Integration
-CD - Continous Delivery
+CI - Continuous Integration
+CD - Continuous Delivery
 CLI - Command Line Interface
 CRD - Custom Resource Definition
+CSPM - Cloud Security Posture Management
 
 EBS - Elastic Block Storage (AWS)
 ESO - External Secrets Operator
 GHA - GitHub Actions
 
 K8s - Kubernetes 
+NFS - Network File System
 NS  - Namespace
 OIDC - OpenId Connect (on top of OAuth)
 
