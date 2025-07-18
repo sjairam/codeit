@@ -1,11 +1,12 @@
 
 ALB - Application Load Balancer
-BOM - Bill of Materials
+BOM - Bill of Materials (WIZ)
 CI - Continuous Integration
 CD - Continuous Delivery
 CLI - Command Line Interface
 CRD - Custom Resource Definition
 CSPM - Cloud Security Posture Management (WIZ)
+CWE - Common Weakness Enumeration
 CWPP - Cloud Workload Protection Platform (WIZ)
 
 EBS - Elastic Block Storage (AWS)
@@ -13,7 +14,8 @@ EFS - Elastic File System (AWS)
 ESO - External Secrets Operator
 FTP - File Transfer Protocol
 GHA - GitHub Actions
-IAM - 
+HPA - Horizontal Pod Autoscaler
+IAM - Identity & Access Management
 ING - Ingress Controller
 K8s - Kubernetes 
 
@@ -22,10 +24,11 @@ NS  - Namespace
 OIDC - OpenId Connect (on top of OAuth)
 PLG - Prometheus Loki Grafana
 
+SAAS - Software as a Service
 SAST - Static Application Security Testing (WIZ)
 SCA - Software Composition Analysis (WIZ)
 SFTP - Secure File Transfer Protocol
-SVC - Service 
+SVC - Service
 
 SDK - Software Development Kit
 UI - User Interface
