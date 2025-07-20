@@ -1,0 +1,31 @@
+Install kubectl 
+===============
+curl.exe -LO "https://dl.k8s.io/release/v1.33.0/bin/windows/amd64/kubectl.exe"
+
+
+AWS CLI 
+=======
+https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+
+Install with Choco
+==================
+Install via Powershell
+
+Set-ExecutionPolicy Bypass -Scope Process -Force; iwr https://community.chocolatey.org/install.ps1 -UseBasicParsing | iex
+
+Basic Install
+
+@"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
+
+Git 
+===
+Install Windows
+
+https://git-scm.com/downloads
+
+
+Kubectx
+=======
+choco install kubens kubectx
+
+
