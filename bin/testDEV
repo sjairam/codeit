@@ -53,7 +53,7 @@ websites=(
     "https://lc-tools-dev.lib.harvard.edu/csv"
     "https://lc-tools-dev.lib.harvard.edu/oai/?verb=Identify"
     "https://listview-dev.lib.harvard.edu"
-    "https://lts-pipelines-dev.lib.harvard.edu/airflow"
+    "https://lts-pipelines-dev.lib.harvard.edu/"
     "https://mps-dev.lib.harvard.edu/iiif/2/URN-3:HUL.OIS:101114808"
     "https://murner-dev.lib.harvard.edu/api/healthcheck"
     "https://nrs-dev.lib.harvard.edu/healthcheck"
