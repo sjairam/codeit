@@ -1,0 +1,26 @@
+Download Istio
+==============
+
+curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.24.3 sh -
+
+
+Add to PATH
+===========
+cd istio-1.24.3
+export PATH=$PWD/bin:$PATH
+
+Verify ISTIO_VERSION
+====================
+
+istioctl ISTIO_VERSION
+
+
+Install Istio using istioctl
+============================
+
+istioctl install --set profile=demo --skip-confirmation
+
+Enable Side car injection
+=========================
+kubectl label namespace default istio-injection=enabled
+
