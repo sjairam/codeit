@@ -1,8 +1,10 @@
 #!/bin/bash
-
 # Cert-Manager Upgrade Script
 # This script safely upgrades cert-manager in Kubernetes clusters
 # Supports both Helm and YAML manifest upgrade methods
+
+# Need to update cert-manager - v1.0
+# Write script for Ops - v2.0
 
 set -euo pipefail
 
