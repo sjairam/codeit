@@ -1,5 +1,6 @@
 JULY 2025
 ---------
+20250723 - Update Istio 1.26.2 - QA
 20250718 - Increased report0 to 6100 allocated storage  - PROD
 20250717 - Increased report0 to 6000 GB - PROD
 20250716 - Upgrade Rancher LZP to 2.11.2 - LZProd
