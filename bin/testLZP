@@ -1,0 +1,82 @@
+#!/bin/bash
+
+# Define colors
+BLUE='\033[0;34m'
+CYAN='\033[0;36m'
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# Initialize counters
+total=0
+success=0
+failed=0
+
+# Print header with date and timestamp
+echo -e "${BLUE}=========================================${NC}"
+echo -e "${CYAN}LZP Environment Health Check${NC}"
+echo -e "${BLUE}Date: $(date '+%Y-%m-%d')${NC}"
+echo -e "${BLUE}Time: $(date '+%H:%M:%S')${NC}"
+echo -e "${BLUE}=========================================${NC}\n"
+
+websites=(
+    "https://cluster-console.lz-prod.lib.harvard.edu/"
+    "https://deployment.lz-prod.lib.harvard.edu"
+    "https://logs.lz-prod.lib.harvard.edu/login"
+    "https://dims-qa.lib.harvard.edu/readiness"
+    "https://dims-prod.lib.harvard.edu/readiness"
+    "https://drs-file-api.lib.harvard.edu/drs-file-api/disposition/v1?filePath=100775164/content/data/492131487.tif"
+    "https://drs2.lib.harvard.edu/drs2_webadmin/unauthorized.html"
+    "https://drs2-qa.hul.harvard.edu/drs2_webadmin/search"
+    "https://etd-qa.lib.harvard.edu/"
+    "https://wordshack-qa.lib.harvard.edu/wordshack/rest/termLabels/adminFlag"
+    "https://wordshack.lib.harvard.edu/wordshack/rest/termLabels/adminFlag"
+)
+
+total=${#websites[@]}
+current=0
+
+for site in "${websites[@]}"
+do
+    ((current++))
+    echo -ne "${YELLOW}Checking site $current of $total...${NC}\r"
+    
+    # Measure response time and get status code
+    start_time=$(date +%s.%N)
+    response=$(curl -Is --connect-timeout 5 --max-time 10 "$site" 2>/dev/null)
+    end_time=$(date +%s.%N)
+    
+    # Calculate response time
+    response_time=$(echo "$end_time - $start_time" | bc)
+    response_time=$(printf "%.2f" $response_time)
+    
+    # Get status code
+    status_code=$(echo "$response" | head -n 1 | cut -d ' ' -f 2)
+    
+    # Handle curl failures
+    if [ -z "$status_code" ]; then
+        status_code="ERROR"
+        status_color=$RED
+        ((failed++))
+    else
+        # Set color based on status code
+        if [ "$status_code" = "200" ] || [ "$status_code" = "302" ]; then
+            status_color=$GREEN
+            ((success++))
+        else
+            status_color=$RED
+            ((failed++))
+        fi
+    fi
+    
+    echo -e "${CYAN}$site: ${status_color}$status_code${NC} (${YELLOW}${response_time}s${NC})"
+done
+
+# Print summary
+echo -e "\n${BLUE}=========================================${NC}"
+echo -e "${CYAN}Summary:${NC}"
+echo -e "${GREEN}Successful: $success${NC}"
+echo -e "${RED}Failed: $failed${NC}"
+echo -e "${BLUE}Total: $total${NC}"
+echo -e "${BLUE}=========================================${NC}"
