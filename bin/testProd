@@ -38,6 +38,7 @@ websites=(
     "https://bibdata.lib.harvard.edu/readinesscheck"
     "https://booklabeler.lib.harvard.edu/"
     "https://curiosity.lib.harvard.edu"
+    "https://dims-prod.lib.harvard.edu/readiness"  
     "https://drsmdsrv.lib.harvard.edu/drs_metadata/rest/heartbeat"
     "https://drsmqsrv-prod.lib.harvard.edu/drs2_activemq/rest/heartbeat"
     "https://eadchecker.lib.harvard.edu/"
