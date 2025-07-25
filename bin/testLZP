@@ -24,7 +24,6 @@ websites=(
     "https://cluster-console.lz-prod.lib.harvard.edu/"
     "https://deployment.lz-prod.lib.harvard.edu"
     "https://logs.lz-prod.lib.harvard.edu/login"
-    "https://dims-prod.lib.harvard.edu/readiness"
     "https://drs-file-api.lib.harvard.edu/drs-file-api/disposition/v1?filePath=100775164/content/data/492131487.tif"
     "https://drs2.lib.harvard.edu/drs2_webadmin/unauthorized.html"
     "https://drs2-qa.hul.harvard.edu/drs2_webadmin/search"
@@ -34,7 +33,7 @@ websites=(
     "https://id-qa.lib.harvard.edu/wordshack/adminFlag/6"
     "https://id-qa.lib.harvard.edu/wordshack/adminFlag/22144"
     "https://id-qa.lib.harvard.edu/wordshack/adminFlag/22145"
-    "https://webservices.lib.harvard.edu/rest/mods/hollis/"
+    "https://webservices.lib.harvard.edu/rest/mods/hollis/990083794450203941"
     "https://wordshack.lib.harvard.edu/wordshack/rest/termLabels/adminFlag"   
     "https://wordshack-qa.lib.harvard.edu/wordshack/rest/termLabels/adminFlag"
 )
