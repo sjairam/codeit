@@ -1,70 +1,71 @@
-# Configure AWS Provider
 terraform {
+
+  required_version = ">= 1.8.0"       #field for tf version.  minimum
+
+  #Different fields and requirements for providers
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.0"
+      version = "~> 6.4.0"
     }
+    helm = {
+      source  = "hashicorp/helm"
+      version = "2.17.0"
+    }
+    #https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs
+    kubernetes = {
+      source = "hashicorp/kubernetes"
+      version = "2.23.0"
+    }
+
   }
 }
 
 provider "aws" {
-  region = "us-east-1"  # Change this to your desired AWS region
+  region = "us-east-1"
 }
 
-# Data sources to retrieve secrets from AWS Secrets Manager
-data "aws_secretsmanager_secret" "dev_harvard_lts_rke_rancher" {
-  name = "dev_harvard_lts_rke_rancher"
+#  TODO :  TO work out cluster dynamically
+#provider "helm" {
+#  kubernetes {
+#    host              = "cluster-console.sand2.harvard.edu"
+#    cluster_ca_certificate = base64decode(rke2_cluster.my_cluster.cluster_ca_certificate)
+#    exec {
+#      api_version = "client.authentication.k8s.io/v1beta1"
+#      args        = ["eks", "get-token", "--cluster-name", "local"]
+#      command     = "aws"
+#    }
+#  }
+#}
+
+# TODO :  TO work out cluster dynamically
+provider "helm" {
+  kubernetes {
+    config_path = "~/.kube/config"
+    config_context = "sandbox1"
+  }
 }
 
-data "aws_secretsmanager_secret" "dev-ssl-key" {
-  name = "dev-ssl-key"
+# Create a namespace for observability
+resource "kubernetes_namespace" "kafka-namespace" {
+  metadata {
+    name = "kafka"
+  }
 }
 
-data "aws_secretsmanager_secret" "dev_harvard_lts_rke_argocd" {
-  name = "dev_harvard_lts_rke_argocd"
+# Create a namespace for observability
+resource "kubernetes_namespace" "observability-namespace" {
+  metadata {
+    name = "observability"
+  }
 }
 
-# Retrieve the actual secret values
-data "aws_secretsmanager_secret_version" "secret_a_version" {
-  secret_id = data.aws_secretsmanager_secret.dev_harvard_lts_rke_rancher.id
-}
-
-data "aws_secretsmanager_secret_version" "secret_b_version" {
-  secret_id = data.aws_secretsmanager_secret.dev-ssl-key.id
-}
-
-data "aws_secretsmanager_secret_version" "secret_c_version" {
-  secret_id = data.aws_secretsmanager_secret.dev_harvard_lts_rke_argocd.id
-}
-
-# Output the secret values (be careful with this in production)
-output "secret_a_value" {
-  description = "this is secret :"
-  value       = data.aws_secretsmanager_secret_version.secret_a_version.secret_string
-}
-
-output "secret_b_value" {
-  description = "this is secret :"
-  value       = data.aws_secretsmanager_secret_version.secret_b_version.secret_string
-  sensitive   = true
-}
-
-output "secret_c_value" {
-  description = "this is secret :"
-  value       = data.aws_secretsmanager_secret_version.secret_c_version.secret_string
-  sensitive   = true
-}
-
-# Output secret ARNs (non-sensitive)
-output "secret_a_arn" {
-  value = data.aws_secretsmanager_secret.dev_harvard_lts_rke_rancher.arn
-}
-
-output "secret_b_arn" {
-  value = data.aws_secretsmanager_secret.dev-ssl-key.arn
-}
-
-output "secret_c_arn" {
-  value = data.aws_secretsmanager_secret.dev_harvard_lts_rke_argocd.arn
+# Helm chart for Strimzi Kafka
+resource "helm_release" "strimzi-cluster-operator" {
+  name = "strimzi-cluster-operator"  
+  repository = "https://strimzi.io/charts/"
+  chart = "strimzi-kafka-operator"
+  version = "0.42.0"
+  namespace = kubernetes_namespace.kafka-namespace.metadata[0].name
+  depends_on = [kubernetes_namespace.kafka-namespace]
 }
