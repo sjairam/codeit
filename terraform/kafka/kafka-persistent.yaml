@@ -28,14 +28,14 @@ spec:
       - id: 0
         type: persistent-claim
         size: 100Gi
-        storageClassName: standard
+        class: test-qa-storage
         deleteClaim: false
   zookeeper:
     replicas: 3
     storage:
       type: persistent-claim
       size: 100Gi
-      storageClassName: standard
+      class: test-qa-storage
       deleteClaim: false
   entityOperator:
     topicOperator: {}
