@@ -11,11 +11,11 @@ This directory contains various utility scripts and tools that enhance the Kuber
 ```
 zzz-mmc-pre-zzz/
 ├── README.md
-├── kubectx.sh
 ├── profiles/
 │   ├── kube_ps.sh
+│   ├── kubectx.sh
 │   └── kubens.sh
-├── aws-waf-cloudfrontV2/
+├── aws-waf-cloudfront/
 │   ├── AWS-AWF-CLOUDFRONT.jpg
 │   └── aws-waf-cloudfrontv2.html
 └── tools/
@@ -47,7 +47,7 @@ export KUBE_PS1_NS_ENABLE=true
 export KUBE_PS1_CONTEXT_ENABLE=true
 ```
 
-#### `kubectx.sh` - Kubernetes Context Manager
+#### `profiles/kubectx.sh` - Kubernetes Context Manager
 A utility for managing and switching between kubectl contexts with an intuitive interface.
 
 **Features:**
@@ -61,22 +61,22 @@ A utility for managing and switching between kubectl contexts with an intuitive 
 **Usage:**
 ```bash
 # List all contexts
-./kubectx.sh
+./profiles/kubectx.sh
 
 # Switch to a specific context
-./kubectx.sh <context-name>
+./profiles/kubectx.sh <context-name>
 
 # Switch to previous context
-./kubectx.sh -
+./profiles/kubectx.sh -
 
 # Show current context
-./kubectx.sh -c
+./profiles/kubectx.sh -c
 
 # Rename a context
-./kubectx.sh <new-name>=<old-name>
+./profiles/kubectx.sh <new-name>=<old-name>
 
 # Delete a context
-./kubectx.sh -d <context-name>
+./profiles/kubectx.sh -d <context-name>
 ```
 
 #### `profiles/kubens.sh` - Kubernetes Namespace Manager
@@ -131,7 +131,7 @@ A utility script for installing and managing K9s, a terminal-based Kubernetes UI
 
 ### AWS Utilities
 
-#### `aws-waf-cloudfrontV2/aws-waf-cloudfrontv2.html` - AWS WAF & CloudFront Configuration Guide
+#### `aws-waf-cloudfront/aws-waf-cloudfrontv2.html` - AWS WAF & CloudFront Configuration Guide
 An interactive HTML presentation/documentation for AWS WAF and CloudFront configuration best practices.
 
 **Features:**
@@ -144,9 +144,9 @@ An interactive HTML presentation/documentation for AWS WAF and CloudFront config
 **Usage:**
 ```bash
 # Open in browser
-open aws-waf-cloudfrontV2/aws-waf-cloudfrontv2.html
+open aws-waf-cloudfront/aws-waf-cloudfrontv2.html
 # or
-xdg-open aws-waf-cloudfrontV2/aws-waf-cloudfrontv2.html
+xdg-open aws-waf-cloudfront/aws-waf-cloudfrontv2.html
 ```
 
 ## Installation & Setup
@@ -162,7 +162,7 @@ xdg-open aws-waf-cloudfrontV2/aws-waf-cloudfrontv2.html
 1. **Clone or copy the scripts to your desired location**
 2. **Make scripts executable:**
    ```bash
-   chmod +x kubectx.sh profiles/*.sh tools/*.sh
+   chmod +x profiles/*.sh tools/*.sh
    ```
 
 3. **Add to your shell configuration:**
@@ -176,7 +176,7 @@ xdg-open aws-waf-cloudfrontV2/aws-waf-cloudfrontv2.html
 
 4. **Optional: Add scripts to your PATH:**
    ```bash
-   export PATH="$PATH:/path/to/zzz-mmc-pre-zzz:/path/to/zzz-mmc-pre-zzz/profiles:/path/to/zzz-mmc-pre-zzz/tools"
+   export PATH="$PATH:/path/to/zzz-mmc-pre-zzz/profiles:/path/to/zzz-mmc-pre-zzz/tools"
    ```
 
 ## Configuration
@@ -214,11 +214,11 @@ kubectl config current-context
 kubectl config view --minify --output 'jsonpath={..namespace}'
 
 # Switch context and namespace
-./kubectx.sh production
+./profiles/kubectx.sh production
 ./profiles/kubens.sh monitoring
 
 # Quick context/namespace switching
-./kubectx.sh -  # Previous context
+./profiles/kubectx.sh -  # Previous context
 ./profiles/kubens.sh -   # Previous namespace
 ```
 
@@ -248,7 +248,7 @@ k9s --context production
 
 1. **Scripts not executable:**
    ```bash
-   chmod +x kubectx.sh profiles/*.sh tools/*.sh
+   chmod +x profiles/*.sh tools/*.sh
    ```
 
 2. **Prompt not updating:**
@@ -286,10 +286,10 @@ These scripts are maintained as part of the personal toolkit. For improvements o
 ## License
 
 - **profiles/kube_ps.sh**: Apache License 2.0 (Copyright 2025 Jon Mosco)
-- **kubectx.sh**: Apache License 2.0 (Copyright 2017 Google Inc.)
+- **profiles/kubectx.sh**: Apache License 2.0 (Copyright 2017 Google Inc.)
 - **profiles/kubens.sh**: Apache License 2.0 (Copyright 2017 Google Inc.)
 - **tools/get_k9s.sh**: Custom script
-- **aws-waf-cloudfrontV2/aws-waf-cloudfrontv2.html**: Custom documentation
+- **aws-waf-cloudfront/aws-waf-cloudfrontv2.html**: Custom documentation
 
 ## Related Tools
 
