@@ -1,20 +1,22 @@
-# zzz-mmc-pre-zzz
+# pre-itops
 
-A collection of Kubernetes and AWS utility scripts and tools for enhanced command-line productivity and infrastructure management.
+A collection of Kubernetes, AWS, and Google Cloud utility scripts and tools for enhanced command-line productivity and infrastructure management.
 
 ## Overview
 
-This directory contains various utility scripts and tools that enhance the Kubernetes and AWS command-line experience. These tools provide convenient shortcuts, prompt enhancements, and management capabilities for Kubernetes contexts, namespaces, and AWS WAF configurations.
+This directory contains various utility scripts and tools that enhance the Kubernetes, AWS, and Google Cloud command-line experience. These tools provide convenient shortcuts, prompt enhancements, and management capabilities for Kubernetes contexts, namespaces, AWS WAF configurations, and Google Cloud Apigee environments.
 
 ## Directory Structure
 
 ```
-zzz-mmc-pre-zzz/
+pre-itops/
 ├── README.md
 ├── profiles/
 │   ├── kube_ps.sh
 │   ├── kubectx.sh
 │   └── kubens.sh
+├── scripts/
+│   └── script-to-check-swp-ips.sh
 ├── aws-waf-cloudfront/
 │   ├── AWS-AWF-CLOUDFRONT.jpg
 │   └── aws-waf-cloudfrontv2.html
@@ -39,7 +41,7 @@ A comprehensive bash/zsh prompt enhancement script that displays current Kuberne
 **Usage:**
 ```bash
 # Source the script in your .bashrc or .zshrc
-source /path/to/zzz-mmc-pre-zzz/profiles/kube_ps.sh
+source /path/to/pre-itops/profiles/kube_ps.sh
 
 # Customize the prompt appearance
 export KUBE_PS1_SYMBOL_ENABLE=true
@@ -129,6 +131,49 @@ A utility script for installing and managing K9s, a terminal-based Kubernetes UI
 ./tools/get_k9s.sh --update
 ```
 
+### Google Cloud Utilities
+
+#### `scripts/script-to-check-swp-ips.sh` - Apigee Environment IP Checker
+A utility script for checking and exporting IP addresses from Google Cloud Apigee environments across multiple organizations and regions.
+
+**Features:**
+- Automated IP address extraction from Apigee environments
+- Support for multiple organizations (MMCX, MercerX, MarshX)
+- Multi-region coverage (Melbourne, Dallas, Bedford)
+- CSV output format for easy analysis
+- Google Cloud authentication integration
+- Comprehensive environment coverage (prod, non-prod, dev, stage, test, uat)
+
+**Prerequisites:**
+- Google Cloud CLI (`gcloud`) installed and authenticated
+- `jq` command-line JSON processor
+- `curl` for API requests
+
+**Usage:**
+```bash
+# Make script executable
+chmod +x scripts/script-to-check-swp-ips.sh
+
+# Run the script to generate CSV output
+./scripts/script-to-check-swp-ips.sh > apigee_ips.csv
+
+# Run and display output
+./scripts/script-to-check-swp-ips.sh
+```
+
+**Output Format:**
+```csv
+Project,Environment,IP
+mmcx-melbourne-ext-prod,prod-1,10.0.1.100
+mmcx-melbourne-ext-prod,trusted-broker-noweb-ext,10.0.1.101
+...
+```
+
+**Covered Organizations:**
+- **MMCX**: Melbourne, Dallas, Bedford (ext/int, prod/non-prod)
+- **MercerX**: Melbourne, Dallas, Bedford (ext/int, prod/non-prod)
+- **MarshX**: Melbourne, Dallas, Bedford (ext/int, prod/non-prod)
+
 ### AWS Utilities
 
 #### `aws-waf-cloudfront/aws-waf-cloudfrontv2.html` - AWS WAF & CloudFront Configuration Guide
@@ -152,31 +197,40 @@ xdg-open aws-waf-cloudfront/aws-waf-cloudfrontv2.html
 ## Installation & Setup
 
 ### Prerequisites
-- `kubectl` installed and configured
+- `kubectl` installed and configured (for Kubernetes utilities)
 - Bash or Zsh shell
 - Access to Kubernetes clusters
 - AWS CLI (for AWS-related operations)
+- Google Cloud CLI (`gcloud`) (for Google Cloud utilities)
+- `jq` command-line JSON processor (for script-to-check-swp-ips.sh)
+- `curl` (for API requests)
 
 ### Setup Instructions
 
 1. **Clone or copy the scripts to your desired location**
 2. **Make scripts executable:**
    ```bash
-   chmod +x profiles/*.sh tools/*.sh
+   chmod +x profiles/*.sh tools/*.sh scripts/*.sh
    ```
 
 3. **Add to your shell configuration:**
    ```bash
    # For bash (.bashrc)
-   source /path/to/zzz-mmc-pre-zzz/profiles/kube_ps.sh
+   source /path/to/pre-itops/profiles/kube_ps.sh
    
    # For zsh (.zshrc)
-   source /path/to/zzz-mmc-pre-zzz/profiles/kube_ps.sh
+   source /path/to/pre-itops/profiles/kube_ps.sh
    ```
 
 4. **Optional: Add scripts to your PATH:**
    ```bash
-   export PATH="$PATH:/path/to/zzz-mmc-pre-zzz/profiles:/path/to/zzz-mmc-pre-zzz/tools"
+   export PATH="$PATH:/path/to/pre-itops/profiles:/path/to/pre-itops/tools:/path/to/pre-itops/scripts"
+   ```
+
+5. **Google Cloud Authentication (for Apigee scripts):**
+   ```bash
+   gcloud auth login
+   gcloud config set project <your-project-id>
    ```
 
 ## Configuration
@@ -242,13 +296,26 @@ k9s
 k9s --context production
 ```
 
+### Apigee Environment Management
+
+```bash
+# Generate CSV report of all Apigee environment IPs
+./scripts/script-to-check-swp-ips.sh > apigee_environment_ips.csv
+
+# View specific organization environments
+./scripts/script-to-check-swp-ips.sh | grep "mmcx-melbourne"
+
+# Check production environments only
+./scripts/script-to-check-swp-ips.sh | grep "prod"
+```
+
 ## Troubleshooting
 
 ### Common Issues
 
 1. **Scripts not executable:**
    ```bash
-   chmod +x profiles/*.sh tools/*.sh
+   chmod +x profiles/*.sh tools/*.sh scripts/*.sh
    ```
 
 2. **Prompt not updating:**
@@ -266,12 +333,31 @@ k9s --context production
    - Verify platform compatibility
    - Ensure sufficient disk space
 
+5. **Apigee script authentication issues:**
+   - Verify `gcloud auth print-access-token` works
+   - Check Google Cloud project configuration
+   - Ensure proper API permissions for Apigee
+
+6. **Missing dependencies:**
+   - Install `jq`: `brew install jq` (macOS) or `apt-get install jq` (Ubuntu)
+   - Install `curl`: Usually pre-installed on most systems
+
 ### Debug Mode
 
 Enable debug mode for troubleshooting:
 ```bash
 export DEBUG=1
 source profiles/kube_ps.sh
+```
+
+For Apigee script debugging:
+```bash
+# Test authentication
+gcloud auth print-access-token
+
+# Test API access
+curl -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+     "https://apigee.googleapis.com/v1/organizations/mmcx-melbourne-ext-prod/environments"
 ```
 
 ## Contributing
@@ -282,6 +368,8 @@ These scripts are maintained as part of the personal toolkit. For improvements o
 2. Maintain backward compatibility
 3. Update documentation as needed
 4. Follow existing code style
+5. Add new scripts to appropriate directories
+6. Update this README when adding new functionality
 
 ## License
 
@@ -289,15 +377,18 @@ These scripts are maintained as part of the personal toolkit. For improvements o
 - **profiles/kubectx.sh**: Apache License 2.0 (Copyright 2017 Google Inc.)
 - **profiles/kubens.sh**: Apache License 2.0 (Copyright 2017 Google Inc.)
 - **tools/get_k9s.sh**: Custom script
+- **scripts/script-to-check-swp-ips.sh**: Custom script
 - **aws-waf-cloudfront/aws-waf-cloudfrontv2.html**: Custom documentation
 
 ## Related Tools
 
-These scripts complement other Kubernetes and AWS tools:
+These scripts complement other Kubernetes, AWS, and Google Cloud tools:
 - `kubectl` - Kubernetes command-line tool
 - `k9s` - Terminal-based Kubernetes UI
 - `lens` - Kubernetes IDE
 - AWS CLI and related tools
+- Google Cloud CLI (`gcloud`)
+- Apigee Management API
 
 ## Support
 
@@ -306,3 +397,4 @@ For issues or questions:
 - Review script help output (`./script.sh --help`)
 - Verify your environment meets prerequisites
 - Test with minimal configuration first
+- Check Google Cloud and AWS documentation for API-related issues

@@ -217,7 +217,7 @@ brew bundle --file=brewfile.txt
    ```bash
    kubectl config use-context <your-cluster>
    # Use kubectx for context management
-   ./zzz-mmc-pre-zzz/profiles/kubectx.sh
+   ./pre-itops/profiles/kubectx.sh
    ```
 
 3. **Python Environment**:
