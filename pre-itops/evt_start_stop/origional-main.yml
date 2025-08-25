@@ -1,0 +1,156 @@
+name: tomcat - AD
+on:
+  workflow_dispatch:
+    inputs:
+      action:    
+        required: false
+        type: choice
+        description: Enter the action to perform. It will default to workflow name if not specified.
+        default: 'restart'
+        options: 
+          #- 'start'
+          - 'stop'
+          - 'restart'
+      dev1:
+        description: "dev1"
+        required: true
+        default: ''
+        type: boolean
+
+      dev2:
+        description: "dev2"
+        required: true
+        default: ''
+        type: boolean
+        
+      qa1:
+        description: "qa1"
+        required: true
+        default: ''
+        type: boolean
+
+      qa2:
+        description: "qa2"
+        required: true
+        default: ''
+        type: boolean
+
+      uat1:
+        description: "uat1"
+        required: false
+        default: ''
+        type: boolean
+
+      uat2:
+        description: "uat2"
+        required: false
+        default: ''
+        type: boolean
+          
+      prd1:
+        description: "prd1"
+        required: false
+        default: ''
+        type: boolean
+
+      prd2:
+        description: "prd2"
+        required: false
+        default: ''
+        type: boolean
+             
+  # push:
+  #   paths-ignore:
+  #     - '.github/workflows/Windward.yml'
+  #   branches:
+  #     - main
+jobs: 
+  setvars:
+    runs-on: 
+      group: ARE-Shared
+    outputs:
+      runner_name: ${{ runner.name }} 
+      WORKSPACE_LOC: ${{ github.workspace }}
+      allenvironment: ${{ steps.setvariables.outputs.allenvironment }}
+    steps:
+      - name: Cleanup & Print variables
+        id: setvariables
+        run: |
+          echo "WORKSPACE_PATH=${{ github.workspace }}" >> "$env:GITHUB_OUTPUT"
+          Remove-Item -Path ${{ github.workspace }}\* -Recurse -Force
+          $stacktype = "${{ inputs.stacktype }}"
+          if (-not $stacktype) {
+          echo "The stacktype is empty"
+          $stacktype = "${{ github.workflow }}" -replace ' - AD', ''
+          
+          } else {
+          echo "The stacktype is not empty"
+          # Add your code here
+          }
+          echo "FINAL STACKTYPE is- $stacktype"
+          echo "FINAL environment is- ${{ inputs.environment }}"
+
+          ########### ENVIRONMENT ##############
+          $allenvironment = ""
+          if ('${{ github.event.inputs.dev1 }}' -eq 'true') {
+            $allenvironment += "dev1,"
+          }
+          if ('${{ github.event.inputs.dev2 }}' -eq 'true') {
+            $allenvironment += "dev2,"
+          }
+          if ('${{ github.event.inputs.qa1 }}' -eq 'true') {
+            $allenvironment += "qa1,"
+          }
+          if ('${{ github.event.inputs.qa2 }}' -eq 'true') {
+            $allenvironment += "qa2,"
+          }
+          if ('${{ github.event.inputs.uat1 }}' -eq 'true') {
+            $allenvironment += "uat1,"
+          }
+          if ('${{ github.event.inputs.uat2 }}' -eq 'true') {
+            $allenvironment += "uat2,"
+          }
+          if ('${{ github.event.inputs.prd1 }}' -eq 'true') {
+            $allenvironment += "prd1,"
+          }
+          if ('${{ github.event.inputs.prd2 }}' -eq 'true') {
+            $allenvironment += "prd2,"
+          }
+          if ($allenvironment -eq "") {
+            Write-Error "No environment selected. Please select at least one environment."
+            exit 1
+          }
+          $allenvironment = $allenvironment.TrimEnd(',')
+          Write-Host "ALL ENVIRONMENTS SELECTED- $allenvironment"
+          echo "allenvironment=$allenvironment" >> "$env:GITHUB_OUTPUT"
+
+      - name: Get current workflow run URL
+        id: current_run_url
+        run: |
+          $REPO_OWNER="${{ github.repository_owner }}"
+          $REPO_NAME="${{ github.event.repository.name }}"
+          $RUN_ID="$env:GITHUB_RUN_ID"
+          $URL="https://github.com/$REPO_OWNER/$REPO_NAME/actions/runs/$RUN_ID"
+          echo "Current run URL: $URL"
+          echo "current_run=$URL" >> "$env:GITHUB_OUTPUT"
+
+  add-run-to-gh-action-db:
+    if: false
+    name: Add workflow run to GH Action Dashboard DB
+    uses: mmctech/AreDevOps/.github/workflows/add-workflow-run.yml@master
+    secrets: inherit
+
+  TRIGGER_SERVICES:
+    needs: [setvars]
+    uses: mmctech/AreDevOps/.github/workflows/startstopservices_nonwin.yml@newfeature
+    with:
+      repo: mmctech/ETV2_Stop_Start_Services
+      stacktype: "${{ inputs.stacktype }}"   
+      action: "${{ inputs.action }}"     
+      enable_sonar_scan: false
+      environment_input: "${{ needs.setvars.outputs.allenvironment }}" 
+      runner_name: ${{ needs.setvars.outputs.runner_name }}
+      description_input: "Incident is created by ARE team for Start/Stop, if Incident got fail it is recommended to rerun the job for the pipeline success. Job url: ${{ needs.current_run_url.outputs.current_run }}"
+      justificationBody_input: "Incident is created by ARE team for Start/Stop, if Incident got fail it is recommended to rerun the job for the pipeline success."
+    secrets: inherit
+  
