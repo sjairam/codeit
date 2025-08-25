@@ -1,6 +1,23 @@
 # CodeIt - DevOps & Infrastructure Toolkit
 
+[![License](https://img.shields.io/badge/License-Internal-blue.svg)](LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-macOS%20%7C%20Linux-lightgrey.svg)](https://github.com/your-username/codeit)
+[![Shell](https://img.shields.io/badge/Shell-Bash%20%7C%20Zsh-green.svg)](https://www.gnu.org/software/bash/)
+[![Python](https://img.shields.io/badge/Python-3.11+-yellow.svg)](https://www.python.org/)
+[![Go](https://img.shields.io/badge/Go-1.21+-blue.svg)](https://golang.org/)
+
 A comprehensive collection of DevOps tools, scripts, and utilities for managing cloud infrastructure, Kubernetes clusters, AWS resources, and development workflows.
+
+## 🎯 Purpose
+
+This toolkit is designed to streamline DevOps operations by providing:
+- **Automated Infrastructure Management**: Scripts for AWS, Kubernetes, and Istio operations
+- **Security & Compliance**: Tools for secret management, SSL checks, and security scanning
+- **Monitoring & Health Checks**: Automated system health monitoring and alerting
+- **Development Workflows**: Utilities for code deployment, testing, and rollbacks
+- **Database & Queue Management**: Tools for Oracle, PostgreSQL, and IBM MQ operations
+
+Perfect for DevOps engineers, SREs, and infrastructure teams managing complex cloud environments.
 
 ## 🚀 Overview
 
@@ -164,10 +181,6 @@ This repository contains a curated set of tools and scripts for:
 - Deprecated utilities
 - Migration candidates
 
-#### `/zzz-mmc-pre-zzz/` - Pre-MMC Tools
-- **AWS WAF/CloudFront**: Security and CDN configurations
-- **Profiles**: `kubectx.sh`, `kubens.sh`, `kube_ps.sh` - Kubernetes context management
-- **Tools**: Legacy tool configurations
 
 ## 🛠️ Setup & Installation
 
@@ -222,6 +235,20 @@ brew bundle --file=brewfile.txt
 
 ## 🚀 Quick Start
 
+### Prerequisites Check
+Before using the tools, ensure you have the necessary access and configurations:
+
+```bash
+# Check AWS CLI configuration
+aws sts get-caller-identity
+
+# Check kubectl access
+kubectl cluster-info
+
+# Check Python environment
+python --version
+```
+
 ### Basic Usage Examples
 
 1. **List AWS Resources**:
@@ -255,6 +282,45 @@ brew bundle --file=brewfile.txt
    ./bin/readMessagesOffQueue.sh
    ```
 
+### Common Workflows
+
+#### Infrastructure Monitoring
+```bash
+# Check system health across environments
+./bin/check_system_health
+./bin/sslCheck.sh
+./bin/solr-check.sh
+
+# Monitor AWS resources
+./bin/list_alb
+./bin/list_rds
+./bin/list_secrets
+```
+
+#### Kubernetes Management
+```bash
+# Get pod information
+./bin/kubectl-get-pod
+
+# List Helm releases
+./bin/helm-list.sh
+
+# Restart deployments
+./bin/restart-deployments.sh
+```
+
+#### Security Operations
+```bash
+# Generate secure passwords
+./bin/gen_passwd
+
+# Find and replace secrets
+./bin/find_replace_secrets
+
+# Check SSL certificates
+./bin/sslCheck.sh
+```
+
 ## 🔧 Development
 
 ### Adding New Tools
@@ -273,9 +339,55 @@ brew bundle --file=brewfile.txt
 - Add documentation for complex tools
 - Use consistent naming conventions
 
+### Troubleshooting
+
+#### Common Issues
+
+1. **Permission Denied Errors**:
+   ```bash
+   # Make scripts executable
+   chmod +x ./bin/*
+   chmod +x ./bin_shell/*
+   ```
+
+2. **AWS CLI Configuration**:
+   ```bash
+   # Verify AWS credentials
+   aws sts get-caller-identity
+   
+   # Configure AWS CLI if needed
+   aws configure
+   ```
+
+3. **Kubernetes Context Issues**:
+   ```bash
+   # List available contexts
+   kubectl config get-contexts
+   
+   # Switch to correct context
+   kubectl config use-context <context-name>
+   ```
+
+4. **Python Environment Issues**:
+   ```bash
+   # Create virtual environment
+   python -m venv venv
+   source venv/bin/activate
+   
+   # Install dependencies
+   pip install -r requirements.txt
+   ```
+
+#### Getting Help
+
+- Check script help: `./bin/script-name --help`
+- Review logs: `kubectl logs <pod-name>`
+- Verify configurations: `kubectl config view`
+- Check AWS resources: `aws ec2 describe-instances`
+
 ## 📋 Current Projects & Status
 
-### Active Development (August 2025)
+### Active Development (December 2024)
 - Infrastructure cleanup and optimization
 - Security compliance automation
 - Monitoring and alerting improvements
@@ -344,4 +456,3 @@ This project is for internal use and contains various tools and configurations f
 
 **Note**: This repository contains production infrastructure tools. Always test changes in development environments before applying to production systems. Current cleanup projects are documented in `Future-Work.txt`.
 
-**Last Updated**: August 2025
