@@ -51,3 +51,29 @@ Creates a timestamped folder `Documents-{Month}-20{Year}` (e.g. `Documents-Jan-2
 - **ZZZ-SOFTWARE/** — Rebuild apps from `ZZZ-SOFTWAREZ`
 
 The script creates the folder structure on first run; subsequent runs reuse existing folders. Elapsed time is printed at the end.
+
+---
+
+## biggest_files
+
+Bash script that finds and lists the largest files in a given directory.
+
+### Usage
+
+```bash
+./bin/biggest_files <folder> [num_files]
+```
+
+### Arguments
+
+- `<folder>` — Directory to search (required)
+- `[num_files]` — Number of files to show (optional, default: 20)
+
+### Examples
+
+```bash
+./bin/biggest_files ~/Downloads 10
+./bin/biggest_files /tmp
+```
+
+Output shows file size and path, sorted largest first.
