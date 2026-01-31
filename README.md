@@ -132,6 +132,25 @@ Output is a table with DBInstanceIdentifier, DBInstanceClass, Engine, EngineVers
 
 ---
 
+## list-postgres-rds
+
+Bash script that lists all RDS instances with PostgreSQL as the database engine.
+
+### Requirements
+
+- AWS CLI installed and in PATH
+- AWS credentials configured (`aws configure`)
+
+### Usage
+
+```bash
+./bin/list-postgres-rds
+```
+
+Output is a table with DBInstanceIdentifier, DBInstanceClass, Engine, EngineVersion, DBInstanceStatus, and MultiAZ. Prints "No PostgreSQL RDS instances found." if none exist.
+
+---
+
 ## list-secrets
 
 Bash script that displays in plain text the key-value pairs for secrets in AWS Secrets Manager.
