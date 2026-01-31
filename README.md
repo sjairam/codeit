@@ -127,3 +127,28 @@ Bash script that restarts a Kubernetes StatefulSet and watches the pods rollout.
 - `<sts-name>` — Name of the StatefulSet to restart (required)
 
 After restarting, the script watches pods with `kubectl get pods -owide -w`.
+
+---
+
+## restore_via_shibboleth
+
+Bash script that restores Shibboleth authentication configuration to a Rancher/Kubernetes cluster (authconfigs, users, user attributes, and the Shibboleth secret).
+
+### Requirements
+
+- kubectl installed and in PATH
+- kubectl context configured (connected to the target cluster)
+- Rancher/Cattle management resources present (authconfigs, users, userattributes)
+
+### Usage
+
+```bash
+./bin_shell/restore_via_shibboleth.sh
+```
+
+The script prompts for confirmation before applying any resources. It then applies:
+
+- `authconfigs.management.cattle.io/v3/shibboleth.json`
+- `users.management.cattle.io/v3/`
+- `userattributes.management.cattle.io/v3/`
+- `secrets/v1/cattle-global-data/shibbolethconfig-spkey.json`
