@@ -155,6 +155,31 @@ The script prompts for confirmation before applying any resources. It then appli
 
 ---
 
+## restore_via_okta
+
+Bash script that restores Okta authentication configuration to a Rancher/Kubernetes cluster (authconfigs, users, user attributes, and the Okta SP key secret).
+
+### Requirements
+
+- kubectl installed and in PATH
+- kubectl context configured (connected to the target cluster)
+- Rancher/Cattle management resources present (authconfigs, users, userattributes)
+
+### Usage
+
+```bash
+./bin_shell/restore_via_okta.sh
+```
+
+The script prompts for confirmation before applying any resources. It then applies:
+
+- `authconfigs.management.cattle.io/v3/okta.json`
+- `users.management.cattle.io/v3/`
+- `userattributes.management.cattle.io/v3/`
+- `secrets/v1/cattle-global-data/oktaconfig-spkey.json`
+
+---
+
 ## restore_via_shibboleth
 
 Bash script that restores Shibboleth authentication configuration to a Rancher/Kubernetes cluster (authconfigs, users, user attributes, and the Shibboleth secret).
