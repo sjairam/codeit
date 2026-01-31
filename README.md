@@ -113,6 +113,32 @@ When finished, the script suggests running `df -h` to check available space.
 
 ---
 
+## list-secrets
+
+Bash script that displays in plain text the key-value pairs for secrets in AWS Secrets Manager.
+
+### Requirements
+
+- AWS CLI installed and in PATH
+- jq installed and in PATH
+- AWS credentials configured (`aws configure`)
+
+### Usage
+
+```bash
+./bin/list-secrets [-h|-s env/stack-secrets|-a]
+```
+
+### Options
+
+- `-h` — Print help message
+- `-s env/stack-secrets` — Print secrets for that stack only (also runs a whitespace check on the secret values)
+- `-a` — Print all secrets in Secrets Manager (not advised)
+
+When using `-s`, the script shows the secret name, key-value pairs (via jq), and reports whether leading or trailing whitespace was found in the secret value.
+
+---
+
 ## get-kubectl
 
 Bash script that downloads and installs kubectl for a specified Kubernetes version.
