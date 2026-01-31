@@ -151,6 +151,59 @@ Output is a table with DBInstanceIdentifier, DBInstanceClass, Engine, EngineVers
 
 ---
 
+## list_rds
+
+Go program that lists AWS RDS instances filtered by database engine. Source lives in `go/list_rds.go`; the compiled binary is `bin/list_rds`.
+
+### Requirements
+
+- Go installed and in PATH (to build or run from source)
+- AWS CLI installed and in PATH
+- AWS credentials configured (`aws configure`) with RDS read permissions
+
+### Building
+
+From the repo root:
+
+```bash
+go build -o bin/list_rds go/list_rds.go
+```
+
+### Usage
+
+```bash
+./bin/list_rds <database-engine>
+# or run from source:
+go run go/list_rds.go <database-engine>
+```
+
+### Arguments
+
+- `<database-engine>` — Engine type to list (required). Valid: `mysql`, `postgres`, `oracle-ee`
+
+### Options
+
+- `-h`, `--help` — Show usage and help
+
+### Examples
+
+```bash
+./bin/list_rds postgres
+./bin/list_rds mysql
+./bin/list_rds oracle-ee
+go run go/list_rds.go postgres
+```
+
+### Output
+
+Table with DBInstanceIdentifier, DBInstanceClass, Engine, EngineVersion, DBInstanceStatus, AllocatedStorage, and MultiAZ. Prints a message if no instances of that engine are found (with hints about permissions, region, or config).
+
+### go/ folder
+
+- **list_rds.go** — Source for the list_rds RDS lister. Single-file Go program; build with `go build -o bin/list_rds go/list_rds.go` from the repo root.
+
+---
+
 ## list-secrets
 
 Bash script that displays in plain text the key-value pairs for secrets in AWS Secrets Manager.
