@@ -206,6 +206,37 @@ Bash script that finds which Application Load Balancer (ALB) and target group an
 
 ---
 
+## list-alb
+
+Bash script that lists Application Load Balancers (ALBs) in the current AWS region, with optional profile and region.
+
+### Requirements
+
+- AWS CLI installed and in PATH
+- AWS credentials configured (`aws configure`)
+
+### Usage
+
+```bash
+./bin/list-alb [-p profile] [-r region] [-h]
+```
+
+### Options
+
+- `-p` — AWS CLI profile to use (optional)
+- `-r` — AWS region to use (optional)
+- `-h` — Show help message
+
+### What it does
+
+- Fetches Application Load Balancers via `aws elbv2 describe-load-balancers` (Type `application` only)
+- Outputs a table of ALB Name and ARN, plus total ALB count
+- Prints a message if no ALBs are found
+- Uses colored output (yellow for status, green for results, red for errors)
+
+---
+
+
 ## list-oracle-rds
 
 Bash script that lists all RDS instances with Oracle as the database engine (oracle-ee).
