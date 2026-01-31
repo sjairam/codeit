@@ -114,6 +114,37 @@ Bash script that detects Istio VirtualServices across Kubernetes namespaces and 
 
 ---
 
+## cert-list
+
+Bash script that lists AWS ACM (Certificate Manager) certificates in the current region, with optional filtering and detailed output.
+
+### Requirements
+
+- AWS CLI installed and in PATH
+- AWS credentials configured (`aws configure`)
+
+### Usage
+
+```bash
+./bin/cert-list [-r region] [-d] [-e] [-h]
+```
+
+### Options
+
+- `-r`, `--region` — AWS region (default: from AWS config or environment)
+- `-d`, `--detailed` — Show detailed information for each certificate (IssuedAt, NotBefore, NotAfter, KeyAlgorithm, SubjectAlternativeNames, InUseBy)
+- `-e`, `--expired` — Show only expired certificates
+- `-h`, `--help` — Show help message
+
+### What it does
+
+- Lists certificates with statuses: ISSUED, EXPIRED, INACTIVE, PENDING_VALIDATION
+- Default output is a table of Domain Name, Status, and Type, plus total certificate count
+- With `-d`, prints per-certificate details from `describe-certificate`
+- With `-e`, filters to expired certificates only (uses ACM `--certificate-statuses EXPIRED`)
+
+---
+
 ## cleanup_purgeable
 
 Bash script that frees purgeable space on macOS by clearing caches, temp files, and triggering APFS reclaim.
