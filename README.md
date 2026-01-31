@@ -113,6 +113,42 @@ When finished, the script suggests running `df -h` to check available space.
 
 ---
 
+## get-kubectl
+
+Bash script that downloads and installs kubectl for a specified Kubernetes version.
+
+### Requirements
+
+- `curl` in PATH
+- Linux or macOS (darwin)
+- amd64 or arm64 architecture
+- sudo (if `/usr/local/bin` is not writable)
+
+### Usage
+
+```bash
+./bin_shell/get-kubectl.sh [version]
+```
+
+### Arguments
+
+- `[version]` — Kubernetes version to install (optional). If omitted, installs the latest stable.
+  - Examples: `v1.28.0`, `1.28.0`, or `latest`
+  - `v` prefix is added automatically if missing
+
+### Examples
+
+```bash
+./bin_shell/get-kubectl.sh              # Install latest stable version
+./bin_shell/get-kubectl.sh latest       # Install latest stable version
+./bin_shell/get-kubectl.sh v1.28.0      # Install version 1.28.0
+./bin_shell/get-kubectl.sh 1.28.0       # Same as above (v prefix added)
+```
+
+kubectl is installed to `/usr/local/bin`. The script verifies the binary after installation.
+
+---
+
 ## rrd
 
 Bash script that restarts a Kubernetes deployment and watches the pods rollout.
