@@ -80,6 +80,40 @@ Output shows file size and path, sorted largest first.
 
 ---
 
+## check-vs
+
+Bash script that detects Istio VirtualServices across Kubernetes namespaces and curls their hosts to verify connectivity.
+
+### Requirements
+
+- kubectl installed and in PATH
+- curl installed and in PATH
+- kubectl context configured (connected to the target cluster)
+- Istio VirtualService CRD present
+
+### Usage
+
+```bash
+./bin/check-vs [-v] [-d] [-a] [-h]
+```
+
+### Options
+
+- `-v` — Verbose output (shows additional script details)
+- `-d` — Dry run (show what would be done without executing curls)
+- `-a` — Include system namespaces (default: skip)
+- `-h` — Show help message
+
+### What it does
+
+- Scans all namespaces for VirtualServices (skips `kube-system`, `kube-public`, `kube-node-lease`, `default`, `istio-system`, `istio-operator`, and namespaces starting with `kube-` or `istio-` by default)
+- Extracts hosts from each VirtualService and tests them with `curl`
+- Uses `curl -v` for detailed connection output; tries HTTP first, then HTTPS if HTTP fails
+- Prints HTTP status code (success: 2xx/3xx), connection failures, and a summary with total VirtualServices and hosts tested
+- Reports start time, end time, and elapsed duration
+
+---
+
 ## cleanup_purgeable
 
 Bash script that frees purgeable space on macOS by clearing caches, temp files, and triggering APFS reclaim.
@@ -112,6 +146,7 @@ Shell-only version:
 When finished, the script suggests running `df -h` to check available space.
 
 ---
+
 
 ## list-oracle-rds
 
