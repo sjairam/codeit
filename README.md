@@ -113,6 +113,25 @@ When finished, the script suggests running `df -h` to check available space.
 
 ---
 
+## list-oracle-rds
+
+Bash script that lists all RDS instances with Oracle as the database engine (oracle-ee).
+
+### Requirements
+
+- AWS CLI installed and in PATH
+- AWS credentials configured (`aws configure`)
+
+### Usage
+
+```bash
+./bin/list-oracle-rds
+```
+
+Output is a table with DBInstanceIdentifier, DBInstanceClass, Engine, EngineVersion, DBInstanceStatus, and MultiAZ. Prints "No Oracle RDS instances found." if none exist.
+
+---
+
 ## list-secrets
 
 Bash script that displays in plain text the key-value pairs for secrets in AWS Secrets Manager.
