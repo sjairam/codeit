@@ -178,6 +178,33 @@ When finished, the script suggests running `df -h` to check available space.
 
 ---
 
+## find-alb
+
+Bash script that finds which Application Load Balancer (ALB) and target group an EC2 instance is registered to.
+
+### Requirements
+
+- AWS CLI installed and in PATH
+- AWS credentials configured (`aws configure`)
+
+### Usage
+
+```bash
+./bin/find-alb <instance-id>
+```
+
+### Arguments
+
+- `<instance-id>` — EC2 instance ID to look up (required)
+
+### What it does
+
+- Lists all Application Load Balancers in the current region
+- For each ALB, checks target groups and their registered targets
+- If the instance is registered to a target group, prints the load balancer name and target group name
+- Exits with a message if the instance is not associated with any ALB
+
+---
 
 ## list-oracle-rds
 
