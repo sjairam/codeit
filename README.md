@@ -77,3 +77,53 @@ Bash script that finds and lists the largest files in a given directory.
 ```
 
 Output shows file size and path, sorted largest first.
+
+---
+
+## rrd
+
+Bash script that restarts a Kubernetes deployment and watches the pods rollout.
+
+### Requirements
+
+- AWS CLI installed and in PATH
+- kubectl installed and in PATH
+- kubectl context configured (kubectl must be connected to the target cluster)
+- Need to be in the correct namespace (NS)
+
+### Usage
+
+```bash
+./bin/rrd <deployment-name>
+```
+
+### Arguments
+
+- `<deployment-name>` — Name of the deployment to restart (required)
+
+After restarting, the script watches pods with `kubectl get pods -owide -w`.
+
+---
+
+## rrs
+
+Bash script that restarts a Kubernetes StatefulSet and watches the pods rollout.
+
+### Requirements
+
+- AWS CLI installed and in PATH
+- kubectl installed and in PATH
+- kubectl context configured (kubectl must be connected to the target cluster)
+- Need to be in the correct namespace (NS)
+
+### Usage
+
+```bash
+./bin/rrs <sts-name>
+```
+
+### Arguments
+
+- `<sts-name>` — Name of the StatefulSet to restart (required)
+
+After restarting, the script watches pods with `kubectl get pods -owide -w`.
