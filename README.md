@@ -80,6 +80,39 @@ Output shows file size and path, sorted largest first.
 
 ---
 
+## cleanup_purgeable
+
+Bash script that frees purgeable space on macOS by clearing caches, temp files, and triggering APFS reclaim.
+
+### Requirements
+
+- macOS (uses `~/Library/Caches`, `/Library/Caches`, `/tmp`; APFS cleanup step)
+- sudo (for system caches and APFS fill/free step)
+
+### Usage
+
+```bash
+./bin/cleanup_purgeable
+```
+
+Shell-only version:
+
+```bash
+./bin_shell/cleanup_purgeable.sh
+```
+
+### What it does
+
+- **User caches** — Removes `~/Library/Caches/*`
+- **System caches** — Removes `/Library/Caches/*` (requires sudo)
+- **Temp files** — Removes `/tmp/*`
+- **Xcode DerivedData** — Removes `~/Library/Developer/Xcode/DerivedData/*` if present
+- **APFS reclaim** — Creates ~1GB in `/private/tmp/cleanup`, then deletes it to encourage APFS to free purgeable space
+
+When finished, the script suggests running `df -h` to check available space.
+
+---
+
 ## rrd
 
 Bash script that restarts a Kubernetes deployment and watches the pods rollout.
