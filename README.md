@@ -443,7 +443,7 @@ Bash script that lists Kubernetes namespaces (excluding system namespaces by def
 - `--no-exclude-system` — Do not exclude common system namespaces
 - `--exclude <ns1,ns2,...>` — Comma- or space-separated additional namespaces to exclude
 - `--kubectl <path>` — Path to kubectl binary (default: kubectl from PATH)
-- `--save-secrets <file.yaml>` — Save all secrets from each namespace to the specified YAML file
+- `--save-secrets [dir]` — Save all secrets to YAML file: `<kubecontext>_<timestamp>.yaml` (default dir: `.`)
 
 ### What it does
 
@@ -451,7 +451,7 @@ Bash script that lists Kubernetes namespaces (excluding system namespaces by def
 - By default excludes system namespaces (e.g. `kube-system`, `kube-public`, `default`, `istio-system`, `cert-manager`, and Rancher `cattle-*` / `fleet-*` namespaces)
 - Excludes namespaces whose names start with `u-` or `p-`
 - Outputs namespaces as one per line (lines), comma-separated (csv), or a bash array (array)
-- With `--save-secrets`, iterates over the filtered namespaces, runs `kubectl get secrets -n <ns> -o yaml` for each, and appends the YAML to the given file (with `---` and `# Namespace: <ns>` headers)
+- With `--save-secrets`, iterates over the filtered namespaces, runs `kubectl get secrets -n <ns> -o yaml` for each, and writes to an auto-generated file `<kubecontext>_<timestamp>.yaml` in the specified directory (or current dir if omitted). The file includes a header with kubectx and timestamp, then `---` and `# Namespace: <ns>` before each namespace's secrets.
 - Prints timing (start, end, elapsed) to stderr
 
 ### Examples
@@ -460,7 +460,8 @@ Bash script that lists Kubernetes namespaces (excluding system namespaces by def
 ./bin/get-ns-secrets
 ./bin/get-ns-secrets --format csv
 ./bin/get-ns-secrets --format array --array-name MYNS
-./bin/get-ns-secrets --save-secrets all-secrets.yaml
+./bin/get-ns-secrets --save-secrets
+./bin/get-ns-secrets --save-secrets /path/to/output-dir
 ./bin/get-ns-secrets --no-exclude-system --exclude my-ns,other-ns
 ```
 
