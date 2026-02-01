@@ -420,6 +420,52 @@ kubectl is installed to `/usr/local/bin`. The script verifies the binary after i
 
 ---
 
+## get-ns-secrets
+
+Bash script that lists Kubernetes namespaces (excluding system namespaces by default) and optionally saves all secrets from each namespace to a YAML file.
+
+### Requirements
+
+- kubectl installed and in PATH
+- kubectl context configured (connected to the target cluster)
+
+### Usage
+
+```bash
+./bin/get-ns-secrets [options]
+```
+
+### Options
+
+- `-h`, `--help` — Show help
+- `--format <lines|csv|array>` — Output format (default: lines)
+- `--array-name <NAME>` — When `--format array`, name the generated array (default: NAMESPACES)
+- `--no-exclude-system` — Do not exclude common system namespaces
+- `--exclude <ns1,ns2,...>` — Comma- or space-separated additional namespaces to exclude
+- `--kubectl <path>` — Path to kubectl binary (default: kubectl from PATH)
+- `--save-secrets <file.yaml>` — Save all secrets from each namespace to the specified YAML file
+
+### What it does
+
+- Fetches namespaces via `kubectl get namespaces`
+- By default excludes system namespaces (e.g. `kube-system`, `kube-public`, `default`, `istio-system`, `cert-manager`, and Rancher `cattle-*` / `fleet-*` namespaces)
+- Excludes namespaces whose names start with `u-` or `p-`
+- Outputs namespaces as one per line (lines), comma-separated (csv), or a bash array (array)
+- With `--save-secrets`, iterates over the filtered namespaces, runs `kubectl get secrets -n <ns> -o yaml` for each, and appends the YAML to the given file (with `---` and `# Namespace: <ns>` headers)
+- Prints timing (start, end, elapsed) to stderr
+
+### Examples
+
+```bash
+./bin/get-ns-secrets
+./bin/get-ns-secrets --format csv
+./bin/get-ns-secrets --format array --array-name MYNS
+./bin/get-ns-secrets --save-secrets all-secrets.yaml
+./bin/get-ns-secrets --no-exclude-system --exclude my-ns,other-ns
+```
+
+---
+
 ## rrd
 
 Bash script that restarts a Kubernetes deployment and watches the pods rollout.
