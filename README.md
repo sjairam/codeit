@@ -467,6 +467,56 @@ Bash script that lists Kubernetes namespaces (excluding system namespaces by def
 
 ---
 
+## get-ns-clustersecretstore
+
+Bash script that lists Kubernetes namespaces (excluding system namespaces by default) and optionally exports ClusterSecretStore resources from External Secrets Operator to YAML.
+
+### Requirements
+
+- kubectl installed and in PATH
+- kubectl context configured (connected to the target cluster)
+
+### Usage
+
+```bash
+./bin/get-ns-clustersecretstore [options]
+```
+
+### Options
+
+- `-h`, `--help` — Show help
+- `--format <lines|csv|array>` — Output format (default: lines)
+- `--array-name <NAME>` — When `--format array`, name the generated array (default: NAMESPACES)
+- `--no-exclude-system` — Do not exclude common system namespaces
+- `--exclude <ns1,ns2,...>` — Comma- or space-separated additional namespaces to exclude
+- `--kubectl <path>` — Path to kubectl binary (default: kubectl from PATH)
+- `--save-clustersecretstore [dir]` — Export ClusterSecretStore resources to YAML file: `<kubecontext>_clustersecretstore_<timestamp>.yaml` (default dir: `.`)
+- `--all-contexts` — Cycle through all contexts from kubeconfig (use with `--save-clustersecretstore`)
+- `--contexts <ctx1,ctx2,...>` — Cycle through specified contexts only (use with `--save-clustersecretstore`)
+
+### What it does
+
+- Fetches namespaces via `kubectl get namespaces` (same exclusion logic as get-ns-secrets)
+- By default excludes system namespaces (e.g. `kube-system`, `kube-public`, `default`, `istio-system`, `cert-manager`, Rancher `cattle-*` / `fleet-*`)
+- Excludes namespaces whose names start with `u-` or `p-`
+- Outputs namespaces as one per line (lines), comma-separated (csv), or a bash array (array)
+- With `--save-clustersecretstore`, exports cluster-scoped ClusterSecretStore resources via `kubectl get clustersecretstore -o yaml` to `<kubecontext>_clustersecretstore_<timestamp>.yaml` (requires External Secrets Operator)
+- With `--all-contexts` or `--contexts`, switches context, exports ClusterSecretStore for each, then restores the original context
+- Prints timing (start, end, elapsed) to stderr
+
+### Examples
+
+```bash
+./bin/get-ns-clustersecretstore
+./bin/get-ns-clustersecretstore --format csv
+./bin/get-ns-clustersecretstore --save-clustersecretstore
+./bin/get-ns-clustersecretstore --save-clustersecretstore /path/to/output-dir
+./bin/get-ns-clustersecretstore --save-clustersecretstore --all-contexts
+./bin/get-ns-clustersecretstore --save-clustersecretstore --contexts ctx1,ctx2,ctx3
+```
+
+---
+
 ## rrd
 
 Bash script that restarts a Kubernetes deployment and watches the pods rollout.
