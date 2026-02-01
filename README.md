@@ -354,6 +354,36 @@ When using `-s`, the script shows the secret name, key-value pairs (via jq), and
 
 ---
 
+## loopGW
+
+Bash script that exports Istio gateway certificate secrets from a Kubernetes cluster for backup or inspection.
+
+### Requirements
+
+- kubectl installed and in PATH
+- kubens installed and in PATH (for namespace switching)
+- kubectl context configured (connected to the target cluster)
+- Istio installed with gateway certificates in `istio-system` namespace
+
+### Usage
+
+```bash
+./bin/loopGW
+```
+
+### What it does
+
+- Creates a dated directory `gateway-YYYY-MM-DD` in the current working directory
+- Switches to the `istio-system` namespace using kubens
+- Exports the following certificate secrets as YAML files:
+  - `apiprivate-cert.yaml`
+  - `private-cert.yaml`
+  - `public-cert.yaml`
+  - `server-cert.yaml`
+- Decodes the base64-encoded values from `server-cert` and prints them in readable format
+
+---
+
 ## get-kubectl
 
 Bash script that downloads and installs kubectl for a specified Kubernetes version.

@@ -1,0 +1,43 @@
+#!/bin/bash
+# For istio clients
+
+newDate=`date '+%Y-%m-%d' `
+
+echo $newDate
+
+mkdir gateway-`date '+%Y-%m-%d' `
+
+cd gateway-$newDate
+
+decode () 
+{
+    echo " Entering decode "
+    grep "^[ ]*[a-zA-Z0-9]" secret.yaml | \
+    while read line; do
+        # Split the key and value
+        KEY=$(echo "$line" | awk '{print $1}')
+        VALUE=$(echo "$line" | awk '{print $2}')
+
+        # Decode the value
+        DECODED_VALUE=$(echo "$VALUE" | base64 --decode)
+
+        # Print key and decoded value as YAML
+        echo "  $KEY: $DECODED_VALUE"
+    done
+}
+
+# List of Kubernetes resources 
+kubens istio-system
+
+kubectl get secrets apiprivate-cert -o yaml >> apiprivate-cert.yaml
+
+kubectl get secrets private-cert -o yaml >> private-cert.yaml
+
+kubectl get secrets public-cert -o yaml >> public-cert.yaml
+
+kubectl get secrets server-cert -o yaml >> server-cert.yaml
+cp server-cert.yaml secret.yaml
+
+decode 
+
+
