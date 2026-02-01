@@ -178,6 +178,36 @@ When finished, the script suggests running `df -h` to check available space.
 
 ---
 
+## export-GW-secrets
+
+Bash script that exports Istio gateway certificate secrets from a Kubernetes cluster for backup or inspection (for Istio clients).
+
+### Requirements
+
+- kubectl installed and in PATH
+- kubens installed and in PATH (for namespace switching)
+- kubectl context configured (connected to the target cluster)
+- Istio installed with gateway certificates in `istio-system` namespace
+
+### Usage
+
+```bash
+./bin/export-GW-secrets
+```
+
+### What it does
+
+- Creates a dated directory `gateway-YYYY-MM-DD` in the current working directory
+- Switches to the `istio-system` namespace using kubens
+- Exports the following certificate secrets as YAML files:
+  - `apiprivate-cert.yaml`
+  - `private-cert.yaml`
+  - `public-cert.yaml`
+  - `server-cert.yaml`
+- Decodes the base64-encoded values from `server-cert` and prints them in readable format
+
+---
+
 ## find-alb
 
 Bash script that finds which Application Load Balancer (ALB) and target group an EC2 instance is registered to.
@@ -351,36 +381,6 @@ Bash script that displays in plain text the key-value pairs for secrets in AWS S
 - `-a` — Print all secrets in Secrets Manager (not advised)
 
 When using `-s`, the script shows the secret name, key-value pairs (via jq), and reports whether leading or trailing whitespace was found in the secret value.
-
----
-
-## loopGW
-
-Bash script that exports Istio gateway certificate secrets from a Kubernetes cluster for backup or inspection.
-
-### Requirements
-
-- kubectl installed and in PATH
-- kubens installed and in PATH (for namespace switching)
-- kubectl context configured (connected to the target cluster)
-- Istio installed with gateway certificates in `istio-system` namespace
-
-### Usage
-
-```bash
-./bin/loopGW
-```
-
-### What it does
-
-- Creates a dated directory `gateway-YYYY-MM-DD` in the current working directory
-- Switches to the `istio-system` namespace using kubens
-- Exports the following certificate secrets as YAML files:
-  - `apiprivate-cert.yaml`
-  - `private-cert.yaml`
-  - `public-cert.yaml`
-  - `server-cert.yaml`
-- Decodes the base64-encoded values from `server-cert` and prints them in readable format
 
 ---
 
