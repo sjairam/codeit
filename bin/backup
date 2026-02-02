@@ -75,16 +75,12 @@ echo " --> Copying 00-personal"
 cp -R 00-personal-00 /Volumes/Data2024/Documents-$month-20$year/
 sleep $timeSec
 
-echo " --> Copying 00-USEFUL"
-cp -R 00-USEFUL* /Volumes/Data2024/Documents-$month-20$year/
-sleep $timeSec
-
 echo " --> Copying 1-PROD*"
 cp -R 1-PROD* /Volumes/Data2024/Documents-$month-20$year/
 sleep $timeSec
 
-echo " --> Copying 2-PROD*"
-cp -R 2-PROD* /Volumes/Data2024/Documents-$month-20$year/
+echo " --> Copying 2-PROD4"
+cp -R 2-PROD4* /Volumes/Data2024/Documents-$month-20$year/
 sleep $timeSec
 
 echo " --> Copying 3-LZPROD*"
@@ -95,16 +91,16 @@ echo " --> Copying 4-QA"
 cp -R 4-QA* /Volumes/Data2024/Documents-$month-20$year/
 sleep $timeSec
 
-echo " --> Copying 5-QA"
-cp -R 5-QA* /Volumes/Data2024/Documents-$month-20$year/
+echo " --> Copying 5-QA4"
+cp -R 5-QA4* /Volumes/Data2024/Documents-$month-20$year/
 sleep $timeSec
 
 echo " --> Copying 6-DEV"
 cp -R 6-DEV* /Volumes/Data2024/Documents-$month-20$year/
 sleep $timeSec
 
-echo " --> Copying 5-SANDBOX"
-cp -R 5-SAND* /Volumes/Data2024/Documents-$month-20$year/
+echo " --> Copying 8-SANDBOX"
+cp -R 8-SAND* /Volumes/Data2024/Documents-$month-20$year/
 sleep $timeSec
 
 echo " --> Copying A*"
@@ -123,10 +119,6 @@ echo " --> Copying D*"
 cp -R D* /Volumes/Data2024/Documents-$month-20$year/
 sleep $timeSec
 
-# echo " --> Copying 0 txts"
-# cp -R 0*.txt /Volumes/Data20$year/Documents-$month-20$year/
-# sleep $timeSec
-
 echo " --> Copy DEMO"
 cp -R DEMOS /Volumes/Data2024/Documents-$month-20$year/
 sleep $timeSec
@@ -139,8 +131,8 @@ echo " --> Copy F*"
 cp -R F* /Volumes/Data2024/Documents-$month-20$year/
 sleep $timeSec
 
-echo " --> Copy GRA*"
-cp -R GRA* /Volumes/Data2024/Documents-$month-20$year/
+echo " --> Copy G*"
+cp -R G* /Volumes/Data2024/Documents-$month-20$year/
 sleep $timeSec
 
 echo " --> Copy H*"
@@ -247,16 +239,12 @@ echo " --> Going to 00-personal"
 cp -R 00-personal* /Volumes/Data2024/Documents-$month-20$year/Movies
 sleep $timeSec
 
-echo " --> Going to 07"
-cp -R 0723* /Volumes/Data2024/Documents-$month-20$year/Movies
+echo " --> Going to 2024"
+cp -R 2024* /Volumes/Data2024/Documents-$month-20$year/Movies
 sleep $timeSec
 
-echo " --> Going to 08"
-cp -R 0823* /Volumes/Data2024/Documents-$month-20$year/Movies
-sleep $timeSec
-
-echo " --> Going to 09"
-cp -R 09* /Volumes/Data2024/Documents-$month-20$year/Movies
+echo " --> Going to 2025"
+cp -R 2025* /Volumes/Data2024/Documents-$month-20$year/Movies
 sleep $timeSec
 
 echo " --> Going to HARVARD"
@@ -267,8 +255,8 @@ echo " --> Going to HUMOUR"
 cp -R HUM* /Volumes/Data2024/Documents-$month-20$year/Movies
 sleep $timeSec
 
-echo " --> Going to LEARNING"
-cp -R LEARNING* /Volumes/Data2024/Documents-$month-20$year/Movies
+echo " --> Going to 00-LEARNING"
+cp -R 00-LEARN* /Volumes/Data2024/Documents-$month-20$year/Movies
 sleep $timeSec
 
 echo " ###>> Going to Desktop"
