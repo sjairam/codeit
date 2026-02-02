@@ -114,6 +114,43 @@ Bash script that detects Istio VirtualServices across Kubernetes namespaces and 
 
 ---
 
+## delete-pods
+
+Bash script that deletes all pods scheduled on a specific Kubernetes node.
+
+### Requirements
+
+- kubectl installed and in PATH
+- kubectl context configured (connected to the target cluster)
+
+### Usage
+
+```bash
+./bin/delete-pods NODE_NAME [--fast]
+```
+
+### Arguments
+
+- `NODE_NAME` — Kubernetes node name to match (required)
+- `--fast` — Use aggressive deletion: zero grace period, force, and don't wait (optional)
+
+### What it does
+
+- Finds all pods scheduled on the specified node using `kubectl get pods --all-namespaces --field-selector "spec.nodeName=${NODE_NAME}"`
+- Deletes each pod in its namespace
+- With `--fast`, uses `--grace-period=0 --force --wait=false` for immediate deletion
+- Reports the number of pods found and any deletion errors
+- Exits with status 1 if any deletions fail
+
+### Examples
+
+```bash
+./bin/delete-pods node-01
+./bin/delete-pods node-02 --fast
+```
+
+---
+
 ## cert-list
 
 Bash script that lists AWS ACM (Certificate Manager) certificates in the current region, with optional filtering and detailed output.
