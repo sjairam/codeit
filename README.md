@@ -680,3 +680,47 @@ The script prompts for confirmation before applying any resources. It then appli
 ---
 
 
+## update_cert_manager
+
+Bash script that safely upgrades cert-manager in a Kubernetes cluster, supporting both Helm and YAML manifest upgrade methods with backup and rollback.
+
+### Requirements
+
+- kubectl installed and in PATH
+- kubectl context configured (connected to the target cluster)
+- Helm installed and in PATH (for `--method helm`)
+- curl installed and in PATH (for `--method yaml` dry-run)
+
+### Usage
+
+```bash
+./bin_shell/update_cert_manager.sh [options]
+```
+
+### Options
+
+- `-v`, `--version VERSION` — Cert-manager version to upgrade to (default: `v1.13.3`)
+- `-n`, `--namespace NAMESPACE` — Namespace where cert-manager is installed (default: `cert-manager`)
+- `-m`, `--method METHOD` — Upgrade method: `helm` or `yaml` (default: `helm`)
+- `-b`, `--backup-dir DIR` — Backup directory (default: `./cert-manager-backup-<timestamp>`)
+- `--dry-run` — Perform a dry run without making any changes
+- `-f`, `--force` — Skip confirmation prompt and proceed with upgrade
+- `-h`, `--help` — Show help message
+
+### What it does
+
+- Checks prerequisites (cluster connectivity, namespace existence, and cert-manager presence)
+- Detects current cert-manager version (when possible)
+- Creates a backup of cert-manager resources, CRDs, secrets, and configmaps
+- Upgrades cert-manager via Helm (`jetstack/cert-manager`) or applies the official YAML manifest for the chosen version
+- Verifies the upgrade by waiting for pods to be ready, checking CRDs, and inspecting issuers/clusterissuers
+- On errors, attempts rollback from the backup; on success (non-dry-run), cleans up the backup directory
+
+### Examples
+
+```bash
+./bin_shell/update_cert_manager.sh -v v1.13.3 -m helm
+./bin_shell/update_cert_manager.sh -v v1.13.3 -m yaml --dry-run
+./bin_shell/update_cert_manager.sh -f -v v1.13.3
+```
+
