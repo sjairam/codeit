@@ -151,6 +151,32 @@ Bash script that deletes all pods scheduled on a specific Kubernetes node.
 
 ---
 
+## find-pods-node
+
+Bash script that lists all pods scheduled on a specific Kubernetes node and prints the total count.
+
+### Requirements
+
+- kubectl installed and in PATH
+- kubectl context configured (connected to the target cluster)
+
+### Usage
+
+```bash
+./bin/find-pods-node <node-name>
+```
+
+### Arguments
+
+- `<node-name>` — Kubernetes node name to match (required)
+
+### What it does
+
+- Uses `kubectl get pods --all-namespaces -o wide --field-selector "spec.nodeName=<node-name>"` to list pods scheduled on the node
+- Prints a summary line with the total number of pods on the node (excluding the header row)
+
+---
+
 ## cert-list
 
 Bash script that lists AWS ACM (Certificate Manager) certificates in the current region, with optional filtering and detailed output.

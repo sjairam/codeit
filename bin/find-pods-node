@@ -1,0 +1,21 @@
+#!/bin/bash
+
+if ! command -v kubectl &> /dev/null; then
+  echo "Error: kubectl is not installed or not in PATH"
+  exit 1
+fi
+
+if [ "$#" -ne 1 ]; then
+  echo "Usage: $(basename "$0") <node-name>"
+  exit 1
+fi
+
+NODE_NAME="$1"
+
+# List pods on the given node
+kubectl get pods --all-namespaces -o wide --field-selector "spec.nodeName=${NODE_NAME}"
+
+# Print count of pods on the given node (excluding header)
+POD_COUNT=$(kubectl get pods --all-namespaces -o wide --field-selector "spec.nodeName=${NODE_NAME}" --no-headers 2>/dev/null | wc -l)
+echo ""
+echo "Total pods on node ${NODE_NAME}: ${POD_COUNT}"
