@@ -153,7 +153,7 @@ Bash script that deletes all pods scheduled on a specific Kubernetes node.
 
 ## find-pods-node
 
-Bash script that lists all pods scheduled on a specific Kubernetes node and prints the total count.
+Bash script that lists all pods running on a given Kubernetes node across all namespaces.
 
 ### Requirements
 
@@ -168,12 +168,23 @@ Bash script that lists all pods scheduled on a specific Kubernetes node and prin
 
 ### Arguments
 
-- `<node-name>` — Kubernetes node name to match (required)
+- `<node-name>` — Name of the Kubernetes node to list pods for (required)
+
+### Options
+
+- `-h`, `--help` — Show help message
 
 ### What it does
 
-- Uses `kubectl get pods --all-namespaces -o wide --field-selector "spec.nodeName=<node-name>"` to list pods scheduled on the node
-- Prints a summary line with the total number of pods on the node (excluding the header row)
+- Lists all pods on the given node via `kubectl get pods --all-namespaces -o wide --field-selector "spec.nodeName=<node-name>"`
+- Prints a summary table with script name, start time, end time, and pod count (excluding header row)
+
+### Examples
+
+```bash
+./bin/find-pods-node ip-10-0-1-42.us-east-2.compute.internal
+./bin/find-pods-node my-worker-node-01
+```
 
 ---
 

@@ -5,17 +5,59 @@ if ! command -v kubectl &> /dev/null; then
   exit 1
 fi
 
+show_help() {
+  cat << 'EOF'
+List all pods running on a given Kubernetes node across all namespaces.
+
+Usage:
+  find-pods-node <node-name>
+
+Arguments:
+  node-name    Name of the Kubernetes node to list pods for
+
+Options:
+  -h, --help   Show this help message
+
+Examples:
+  find-pods-node ip-10-0-1-42.us-east-2.compute.internal
+  find-pods-node my-worker-node-01
+
+Requirements:
+  kubectl must be installed and configured for your cluster.
+EOF
+}
+
+case "${1:-}" in
+  -h|--help|help)
+    show_help
+    exit 0
+    ;;
+esac
+
 if [ "$#" -ne 1 ]; then
   echo "Usage: $(basename "$0") <node-name>"
+  echo "Run '$(basename "$0") --help' for more information."
   exit 1
 fi
 
 NODE_NAME="$1"
+
+SCRIPT_NAME=$(basename "$0")
+echo "=== ${SCRIPT_NAME} - Node: ${NODE_NAME} ==="
+echo
+
+START_TIME=$(date '+%Y-%m-%d %H:%M:%S')
 
 # List pods on the given node
 kubectl get pods --all-namespaces -o wide --field-selector "spec.nodeName=${NODE_NAME}"
 
 # Print count of pods on the given node (excluding header)
 POD_COUNT=$(kubectl get pods --all-namespaces -o wide --field-selector "spec.nodeName=${NODE_NAME}" --no-headers 2>/dev/null | wc -l)
-echo ""
-echo "Total pods on node ${NODE_NAME}: ${POD_COUNT}"
+
+END_TIME=$(date '+%Y-%m-%d %H:%M:%S')
+
+# Summary table: script, start time, end time, pod count
+printf '\n'
+printf '%-20s  %-20s  %-20s  %s\n' 'SCRIPT' 'START TIME' 'END TIME' 'POD COUNT'
+printf '%-20s  %-20s  %-20s  %s\n' '--------------------' '--------------------' '--------------------' '----------'
+printf '%-20s  %-20s  %-20s  %s\n' "${SCRIPT_NAME}" "${START_TIME}" "${END_TIME}" "${POD_COUNT}"
