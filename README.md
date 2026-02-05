@@ -472,10 +472,36 @@ go run go/list-rds.go postgres
 ### Output
 
 Table with DBInstanceIdentifier, DBInstanceClass, Engine, EngineVersion, DBInstanceStatus, AllocatedStorage, and MultiAZ. Prints a message if no instances of that engine are found (with hints about permissions, region, or config).
+---
+
+## gen-passwd
+
+Go program that interactively generates a random password based on how many letters, symbols, and numbers you want. Source lives in `go/gen-passwd.go`; the compiled binary is `bin_go/gen-passwd`.
+
+### Requirements
+
+- Go installed and in PATH (to build or run from source)
+
+### Building (`gen-passwd`)
+
+From the repo root:
+
+```bash
+go build -o bin_go/gen-passwd go/gen-passwd.go
+```
+
+### Usage
+
+```bash
+./bin_go/gen-passwd
+```
+
+The program will prompt you for how many letters, symbols, and numbers to include, then prints the generated password.
 
 ### go/ folder
 
 - **list-rds.go** — Source for the `list-rds` RDS lister. Single-file Go program; build with `go build -o bin_go/list-rds go/list-rds.go` from the repo root.
+- **gen-passwd.go** — Source for the `gen-passwd` password generator. Single-file Go program; build with `go build -o bin_go/gen-passwd go/gen-passwd.go` from the repo root.
 
 ---
 
