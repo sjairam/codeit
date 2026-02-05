@@ -47,6 +47,7 @@ echo "=== ${SCRIPT_NAME} - Node: ${NODE_NAME} ==="
 echo
 
 START_TIME=$(date '+%Y-%m-%d %H:%M:%S')
+START_EPOCH=$(date -j -f '%Y-%m-%d %H:%M:%S' "${START_TIME}" +%s)
 
 # List pods on the given node
 kubectl get pods --all-namespaces -o wide --field-selector "spec.nodeName=${NODE_NAME}"
@@ -55,9 +56,11 @@ kubectl get pods --all-namespaces -o wide --field-selector "spec.nodeName=${NODE
 POD_COUNT=$(kubectl get pods --all-namespaces -o wide --field-selector "spec.nodeName=${NODE_NAME}" --no-headers 2>/dev/null | wc -l)
 
 END_TIME=$(date '+%Y-%m-%d %H:%M:%S')
+END_EPOCH=$(date -j -f '%Y-%m-%d %H:%M:%S' "${END_TIME}" +%s)
+ELAPSED_SECONDS=$((END_EPOCH - START_EPOCH))
 
 # Summary table: script, start time, end time, pod count
 printf '\n'
-printf '%-20s  %-20s  %-20s  %s\n' 'SCRIPT' 'START TIME' 'END TIME' 'POD COUNT'
-printf '%-20s  %-20s  %-20s  %s\n' '--------------------' '--------------------' '--------------------' '----------'
-printf '%-20s  %-20s  %-20s  %s\n' "${SCRIPT_NAME}" "${START_TIME}" "${END_TIME}" "${POD_COUNT}"
+printf '%-20s  %-20s  %-20s  %-14s  %s\n' 'SCRIPT' 'START TIME' 'END TIME' 'DURATION (s)' 'POD COUNT'
+printf '%-20s  %-20s  %-20s  %-14s  %s\n' '--------------------' '--------------------' '--------------------' '--------------' '----------'
+printf '%-20s  %-20s  %-20s  %-14s  %s\n' "${SCRIPT_NAME}" "${START_TIME}" "${END_TIME}" "${ELAPSED_SECONDS}" "${POD_COUNT}"
