@@ -359,6 +359,32 @@ Bash script that lists Application Load Balancers (ALBs) in the current AWS regi
 - Prints a message if no ALBs are found
 - Uses colored output (yellow for status, green for results, red for errors)
 
+### Go version (`list-alb`)
+
+- The Go implementation of `list-alb` lives in `go/list-alb.go`
+- The compiled binary is stored in `bin_go/list-alb`
+- Functionality mirrors the Bash script but is implemented in Go
+
+#### Building `list-alb` (Go)
+
+From the repo root:
+
+```bash
+go build -o bin_go/list-alb go/list-alb.go
+```
+
+#### Usage
+
+```bash
+./bin_go/list-alb [-p profile] [-r region] [-h]
+```
+
+Options:
+
+- `-p`, `--profile` — AWS CLI profile to use (optional)
+- `-r`, `--region` — AWS region to use (optional)
+- `-h`, `--help` — Show help message
+
 ---
 
 
