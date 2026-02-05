@@ -179,6 +179,27 @@ Bash script that lists all pods running on a given Kubernetes node across all na
 - Lists all pods on the given node via `kubectl get pods --all-namespaces -o wide --field-selector "spec.nodeName=<node-name>"`
 - Prints a summary table with script name, start time, end time, and pod count (excluding header row)
 
+### Go version (`fpn`)
+
+- The Go implementation of `find-pods-node` lives in `go/fpn.go`
+- The compiled binary is stored in `bin_go/fpn`
+- Functionality is the same as the Bash script, but implemented in Go
+
+#### Building `fpn`
+
+From the repo root:
+
+```bash
+go build -o bin_go/fpn go/fpn.go
+```
+
+#### Usage
+
+```bash
+./bin_go/fpn <node-name>
+./bin_go/fpn --help
+```
+
 ### Examples
 
 ```bash

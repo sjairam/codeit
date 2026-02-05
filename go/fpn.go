@@ -123,4 +123,3 @@ func main() {
 	fmt.Printf("%-20s  %-20s  %-20s  %-14s  %s\n", "--------------------", "--------------------", "--------------------", "--------------", "----------")
 	fmt.Printf("%-20s  %-20s  %-20s  %-14d  %d\n", scriptName, startTimeStr, endTimeStr, elapsedSeconds, podCount)
 }
-
