@@ -426,9 +426,9 @@ Output is a table with DBInstanceIdentifier, DBInstanceClass, Engine, EngineVers
 
 ---
 
-## list_rds
+## list-rds
 
-Go program that lists AWS RDS instances filtered by database engine. Source lives in `go/list_rds.go`; the compiled binary is `bin/list_rds`.
+Go program that lists AWS RDS instances filtered by database engine. Source lives in `go/list-rds.go`; the compiled binary is `bin_go/list-rds`.
 
 ### Requirements
 
@@ -436,20 +436,20 @@ Go program that lists AWS RDS instances filtered by database engine. Source live
 - AWS CLI installed and in PATH
 - AWS credentials configured (`aws configure`) with RDS read permissions
 
-### Building
+### Building (`list-rds`)
 
 From the repo root:
 
 ```bash
-go build -o bin/list_rds go/list_rds.go
+go build -o bin_go/list-rds go/list-rds.go
 ```
 
 ### Usage
 
 ```bash
-./bin/list_rds <database-engine>
+./bin_go/list-rds <database-engine>
 # or run from source:
-go run go/list_rds.go <database-engine>
+go run go/list-rds.go <database-engine>
 ```
 
 ### Arguments
@@ -463,10 +463,10 @@ go run go/list_rds.go <database-engine>
 ### Examples
 
 ```bash
-./bin/list_rds postgres
-./bin/list_rds mysql
-./bin/list_rds oracle-ee
-go run go/list_rds.go postgres
+./bin_go/list-rds postgres
+./bin_go/list-rds mysql
+./bin_go/list-rds oracle-ee
+go run go/list-rds.go postgres
 ```
 
 ### Output
@@ -475,7 +475,7 @@ Table with DBInstanceIdentifier, DBInstanceClass, Engine, EngineVersion, DBInsta
 
 ### go/ folder
 
-- **list_rds.go** — Source for the list_rds RDS lister. Single-file Go program; build with `go build -o bin/list_rds go/list_rds.go` from the repo root.
+- **list-rds.go** — Source for the `list-rds` RDS lister. Single-file Go program; build with `go build -o bin_go/list-rds go/list-rds.go` from the repo root.
 
 ---
 
