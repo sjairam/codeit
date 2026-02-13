@@ -790,7 +790,7 @@ The script prompts for confirmation before applying any resources. It then appli
 ---
 
 
-## update_cert_manager
+## update-cert-manager
 
 Bash script that safely upgrades cert-manager in a Kubernetes cluster, supporting both Helm and YAML manifest upgrade methods with backup and rollback.
 
@@ -804,12 +804,12 @@ Bash script that safely upgrades cert-manager in a Kubernetes cluster, supportin
 ### Usage
 
 ```bash
-./bin_shell/update_cert_manager.sh [options]
+./bin_shell/update-cert-manager.sh [options]
 ```
 
 ### Options
 
-- `-v`, `--version VERSION` — Cert-manager version to upgrade to (default: `v1.13.3`)
+- `-v`, `--version VERSION` — Cert-manager version to upgrade to (default: `v1.19.0`)
 - `-n`, `--namespace NAMESPACE` — Namespace where cert-manager is installed (default: `cert-manager`)
 - `-m`, `--method METHOD` — Upgrade method: `helm` or `yaml` (default: `helm`)
 - `-b`, `--backup-dir DIR` — Backup directory (default: `./cert-manager-backup-<timestamp>`)

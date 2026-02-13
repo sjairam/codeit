@@ -3,6 +3,9 @@
 # Cert-Manager Upgrade Script
 # This script safely upgrades cert-manager in Kubernetes clusters
 # Supports both Helm and YAML manifest upgrade methods
+# v0.1 - initial 
+# v0.2 - Harvard request
+# 0.3 - Add usage and help 
 
 set -euo pipefail
 
@@ -14,7 +17,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Default values
-CERT_MANAGER_VERSION="v1.13.3"
+CERT_MANAGER_VERSION="v1.19.0"
 NAMESPACE="cert-manager"
 BACKUP_DIR="./cert-manager-backup-$(date +%Y%m%d-%H%M%S)"
 UPGRADE_METHOD="helm"
@@ -53,9 +56,9 @@ Options:
     -h, --help                Show this help message
 
 Examples:
-    $0 -v v1.13.3 -m helm
-    $0 -v v1.13.3 -m yaml --dry-run
-    $0 -f -v v1.13.3
+    $0 -v v1.18.3 -m helm
+    $0 -v v1.18.3 -m yaml --dry-run
+    $0 -f -v v1.18.3
 
 EOF
 }
