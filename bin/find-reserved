@@ -13,15 +13,21 @@ NC='\033[0m' # No Color
 
 KUBECTL=$(command -v kubectl)
 
+# Brief usage line (for invalid options)
+usage() {
+    echo -e "${CYAN}Usage:${NC} $0 [-h] [-n [namespace]] [-a] [-s]"
+    echo -e "Use ${YELLOW}-h${NC} for full help."
+}
+
 # Function to display help options
 Help() {
     echo -e "${BLUE}Find all reserved memory instances (memory requests) in a Kubernetes cluster${NC}"
     echo
-    echo -e "${CYAN}Syntax: $0 [-h] [-n namespace] [-a] [-s]${NC}"
+    echo -e "${CYAN}Syntax: $0 [-h] [-n [namespace]] [-a] [-s]${NC}"
     echo -e "${YELLOW}options:${NC}"
     echo -e "-h                     Print this message."
-    echo -e "-n namespace          Search in specific namespace only."
-    echo -e "-a                     Show all namespaces (default)."
+    echo -e "-n [namespace]        Search in specific namespace. If -n is omitted or empty, search all namespaces."
+    echo -e "-a                     Show all namespaces (explicit)."
     echo -e "-s                     Sort by memory size (descending)."
     echo -e "Pods in namespaces starting with 'kube' (e.g. kube-system) are excluded."
     echo
@@ -83,11 +89,15 @@ find_reserved_memory() {
     local namespace_arg=""
     local sort_flag=false
     
-    # Parse command line arguments
-    while getopts ':n:ash' opt; do
+    # Parse command line arguments (-n has optional arg: empty = all namespaces)
+    while getopts ':n::ash' opt; do
         case "$opt" in
             n)
-                namespace_arg="-n ${OPTARG}"
+                if [ -z "${OPTARG}" ]; then
+                    namespace_arg="--all-namespaces"
+                else
+                    namespace_arg="-n ${OPTARG}"
+                fi
                 ;;
             a)
                 namespace_arg="--all-namespaces"
@@ -101,12 +111,12 @@ find_reserved_memory() {
                 ;;
             \?)
                 echo -e "${RED}Invalid option: -$OPTARG${NC}" >&2
-                Help
+                usage
                 exit 1
                 ;;
             :)
                 echo -e "${RED}Option -$OPTARG requires an argument.${NC}" >&2
-                Help
+                usage
                 exit 1
                 ;;
         esac
