@@ -23,6 +23,7 @@ Help() {
     echo -e "-n namespace          Search in specific namespace only."
     echo -e "-a                     Show all namespaces (default)."
     echo -e "-s                     Sort by memory size (descending)."
+    echo -e "Pods in namespaces starting with 'kube' (e.g. kube-system) are excluded."
     echo
     echo -e "${CYAN}Examples:${NC}"
     echo -e "  $0                    # Show all reserved memory in all namespaces"
@@ -146,7 +147,7 @@ find_reserved_memory() {
         echo "--------------------------------------------------------------------------------------------------------"
         ${KUBECTL} get pods ${namespace_arg} -o custom-columns=NAMESPACE:.metadata.namespace,NAME:.metadata.name,CONTAINER:.spec.containers[*].name,MEMORY-REQUEST:.spec.containers[*].resources.requests.memory 2>/dev/null | \
             grep -v "MEMORY-REQUEST.*<none>" | \
-            awk 'NR>1 {print $0}'
+            awk 'NR>1 && $1 !~ /^kube/ {print $0}'
         return
     fi
     
@@ -217,10 +218,11 @@ find_reserved_memory() {
         local temp_file=$(mktemp)
         
         echo "$pods_json" | jq -r '
-            .items[] | 
+            .items[] |
+            select((.metadata.namespace | startswith("kube")) | not) |
             .metadata.namespace as $ns |
             .metadata.name as $pod |
-            .spec.containers[]? | 
+            .spec.containers[]? |
             select(.resources.requests.memory != null) |
             "\($ns)|\($pod)|\(.name)|\(.resources.requests.memory)"
         ' | while IFS='|' read -r namespace pod_name container_name memory_request; do
@@ -241,10 +243,11 @@ find_reserved_memory() {
     else
         # Display without sorting
         echo "$pods_json" | jq -r '
-            .items[] | 
+            .items[] |
+            select((.metadata.namespace | startswith("kube")) | not) |
             .metadata.namespace as $ns |
             .metadata.name as $pod |
-            .spec.containers[]? | 
+            .spec.containers[]? |
             select(.resources.requests.memory != null) |
             "\($ns)|\($pod)|\(.name)|\(.resources.requests.memory)"
         ' | while IFS='|' read -r namespace pod_name container_name memory_request; do
@@ -257,8 +260,8 @@ find_reserved_memory() {
     
     rm -f "$usage_file"
     
-    # Count total containers with reserved memory
-    local count=$(echo "$pods_json" | jq '[.items[] | .spec.containers[]? | select(.resources.requests.memory != null)] | length')
+    # Count total containers with reserved memory (excluding kube* namespaces)
+    local count=$(echo "$pods_json" | jq '[.items[] | select((.metadata.namespace | startswith("kube")) | not) | .spec.containers[]? | select(.resources.requests.memory != null)] | length')
     
     echo
     echo -e "${GREEN}Found ${count} container(s) with reserved memory${NC}"
