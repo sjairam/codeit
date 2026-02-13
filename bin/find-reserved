@@ -29,6 +29,8 @@ Help() {
     echo -e "  $0 -n default         # Show reserved memory in default namespace"
     echo -e "  $0 -s                 # Show all reserved memory sorted by size"
     echo
+    echo -e "Pods with >25% discrepancy between actual usage and reserved requests are ${RED}highlighted in red${NC}."
+    echo
 }
 
 # Function to check the availability of required binaries
@@ -141,18 +143,73 @@ find_reserved_memory() {
         
         # Fallback to basic kubectl output
         echo -e "${CYAN}NAMESPACE${NC}\t${CYAN}POD${NC}\t\t\t${CYAN}CONTAINER${NC}\t\t${CYAN}MEMORY REQUEST${NC}"
-        echo "--------------------------------------------------------------------------------"
+        echo "--------------------------------------------------------------------------------------------------------"
         ${KUBECTL} get pods ${namespace_arg} -o custom-columns=NAMESPACE:.metadata.namespace,NAME:.metadata.name,CONTAINER:.spec.containers[*].name,MEMORY-REQUEST:.spec.containers[*].resources.requests.memory 2>/dev/null | \
             grep -v "MEMORY-REQUEST.*<none>" | \
             awk 'NR>1 {print $0}'
         return
     fi
     
+    # Fetch actual memory usage (requires metrics-server)
+    local usage_file
+    usage_file=$(mktemp)
+    local top_output
+    top_output=$(${KUBECTL} top pods ${namespace_arg} --containers 2>/dev/null)
+    if [ $? -eq 0 ] && [ -n "$top_output" ]; then
+        echo "$top_output" | tail -n +2 | while IFS= read -r line; do
+            local ns p c mem
+            ns=$(echo "$line" | awk '{print $1}')
+            p=$(echo "$line" | awk '{print $2}')
+            c=$(echo "$line" | awk '{print $3}')
+            mem=$(echo "$line" | awk '{print $NF}')
+            [ -n "$ns" ] && [ -n "$p" ] && [ -n "$c" ] && [ -n "$mem" ] && echo "${ns}|${p}|${c}|${mem}"
+        done > "$usage_file"
+    fi
+
     # Use jq for better parsing
     # Print header
-    printf "${CYAN}%-20s %-40s %-30s %-15s${NC}\n" "NAMESPACE" "POD" "CONTAINER" "MEMORY REQUEST"
-    echo "--------------------------------------------------------------------------------"
+    printf "${CYAN}%-20s %-40s %-30s %-15s %-15s${NC}\n" "NAMESPACE" "POD" "CONTAINER" "USAGE" "RESERVED"
+    echo "--------------------------------------------------------------------------------------------------------"
+    echo -e "${YELLOW}(Rows in red: >25% discrepancy between actual usage and reserved)${NC}"
+    echo
     
+    # Helper to look up usage for a namespace/pod/container
+    get_usage() {
+        local ns=$1 pod=$2 cont=$3
+        if [ -f "$usage_file" ] && [ -s "$usage_file" ]; then
+            local found
+            found=$(awk -F'|' -v ns="$ns" -v pod="$pod" -v cont="$cont" '$1==ns && $2==pod && $3==cont {print $4; exit}' "$usage_file")
+            echo "${found:--}"
+        else
+            echo "-"
+        fi
+    }
+
+    # Print a row, highlighting in RED if discrepancy between usage and reserved > 25%
+    print_row() {
+        local namespace=$1 pod_name=$2 container_name=$3 usage=$4 memory_request=$5
+        local highlight=false
+        if [ "$usage" != "-" ] && [ -n "$memory_request" ] && command -v bc &>/dev/null; then
+            local usage_bytes reserved_bytes
+            usage_bytes=$(convert_to_bytes "$usage")
+            reserved_bytes=$(convert_to_bytes "$memory_request")
+            if [ -n "$usage_bytes" ] && [ -n "$reserved_bytes" ] && [ "${reserved_bytes:-0}" -gt 0 ] 2>/dev/null; then
+                local diff_pct
+                diff_pct=$(echo "a=100*(${usage_bytes}-${reserved_bytes})/${reserved_bytes}; if(a<0) a=-a; a" | bc 2>/dev/null)
+                if [ -n "$diff_pct" ]; then
+                    local is_gt
+                    is_gt=$(echo "$diff_pct > 25" | bc 2>/dev/null)
+                    [ "$is_gt" = "1" ] && highlight=true
+                fi
+            fi
+        fi
+        if [ "$highlight" = true ]; then
+            printf "${RED}%-20s %-40s %-30s %-15s %-15s${NC}\n" "$namespace" "$pod_name" "$container_name" "$usage" "$memory_request"
+        else
+            printf "%-20s %-40s %-30s %-15s %-15s\n" "$namespace" "$pod_name" "$container_name" "$usage" "$memory_request"
+        fi
+    }
+
     # Extract and display pod information
     if [ "$sort_flag" = true ]; then
         # Sort by memory size (requires conversion)
@@ -176,7 +233,8 @@ find_reserved_memory() {
         # Sort and display
         if [ -f "$temp_file" ] && [ -s "$temp_file" ]; then
             sort -t'|' -rn -k1 "$temp_file" | while IFS='|' read -r _ namespace pod_name container_name memory_request; do
-                printf "%-20s %-40s %-30s %-15s\n" "$namespace" "$pod_name" "$container_name" "$memory_request"
+                usage=$(get_usage "$namespace" "$pod_name" "$container_name")
+                print_row "$namespace" "$pod_name" "$container_name" "$usage" "$memory_request"
             done
             rm -f "$temp_file"
         fi
@@ -191,10 +249,13 @@ find_reserved_memory() {
             "\($ns)|\($pod)|\(.name)|\(.resources.requests.memory)"
         ' | while IFS='|' read -r namespace pod_name container_name memory_request; do
             if [ -n "$memory_request" ]; then
-                printf "%-20s %-40s %-30s %-15s\n" "$namespace" "$pod_name" "$container_name" "$memory_request"
+                usage=$(get_usage "$namespace" "$pod_name" "$container_name")
+                print_row "$namespace" "$pod_name" "$container_name" "$usage" "$memory_request"
             fi
         done
     fi
+    
+    rm -f "$usage_file"
     
     # Count total containers with reserved memory
     local count=$(echo "$pods_json" | jq '[.items[] | .spec.containers[]? | select(.resources.requests.memory != null)] | length')
