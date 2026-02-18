@@ -15,7 +15,7 @@ KUBECTL=$(command -v kubectl)
 
 # Brief usage line (for invalid options)
 usage() {
-    echo -e "${CYAN}Usage:${NC} $0 [-h] [-n [namespace]] [-a] [-s]"
+    echo -e "${CYAN}Usage:${NC} $0 [-h] [-n [namespace]] [-a] [-s] [-o [filename]]"
     echo -e "Use ${YELLOW}-h${NC} for full help."
 }
 
@@ -23,18 +23,21 @@ usage() {
 Help() {
     echo -e "${BLUE}Find all reserved memory instances (memory requests) in a Kubernetes cluster${NC}"
     echo
-    echo -e "${CYAN}Syntax: $0 [-h] [-n [namespace]] [-a] [-s]${NC}"
+    echo -e "${CYAN}Syntax: $0 [-h] [-n [namespace]] [-a] [-s] [-o [filename]]${NC}"
     echo -e "${YELLOW}options:${NC}"
     echo -e "-h                     Print this message."
     echo -e "-n [namespace]        Search in specific namespace. If -n is omitted or empty, search all namespaces."
     echo -e "-a                     Show all namespaces (explicit)."
     echo -e "-s                     Sort by memory size (descending)."
+    echo -e "-o [filename]          Output results to CSV file. Filename gets kube context and timestamp appended (e.g. reserved-memory-<context>-<date>_<time>.csv)."
     echo -e "Pods in namespaces starting with 'kube' (e.g. kube-system) are excluded."
     echo
     echo -e "${CYAN}Examples:${NC}"
     echo -e "  $0                    # Show all reserved memory in all namespaces"
     echo -e "  $0 -n default         # Show reserved memory in default namespace"
     echo -e "  $0 -s                 # Show all reserved memory sorted by size"
+    echo -e "  $0 -o output.csv      # Output results to output.csv"
+    echo -e "  $0 -s -o results.csv  # Sort and output to results.csv"
     echo
     echo -e "Pods with >25% discrepancy between actual usage and reserved requests are ${RED}highlighted in red${NC}."
     echo
@@ -84,13 +87,56 @@ convert_to_bytes() {
     esac
 }
 
+# Function to convert bytes to human-readable format
+convert_from_bytes() {
+    local bytes=$1
+    if [ -z "$bytes" ] || [ "$bytes" = "0" ] || [ "$bytes" = "-" ]; then
+        echo "-"
+        return
+    fi
+    
+    # Remove any decimal part for comparison (bc may output decimals)
+    local bytes_int=$(echo "scale=0; $bytes / 1" | bc 2>/dev/null || echo "$bytes")
+    
+    # Use bc for calculations if available
+    if command -v bc &>/dev/null; then
+        local gb=$(echo "scale=2; $bytes / (1024 * 1024 * 1024)" | bc)
+        local mb=$(echo "scale=2; $bytes / (1024 * 1024)" | bc)
+        local kb=$(echo "scale=2; $bytes / 1024" | bc)
+        
+        # Choose appropriate unit (compare integer part)
+        if [ -n "$gb" ] && [ "$(echo "$gb >= 1" | bc 2>/dev/null)" = "1" ]; then
+            echo "${gb}Gi"
+        elif [ -n "$mb" ] && [ "$(echo "$mb >= 1" | bc 2>/dev/null)" = "1" ]; then
+            echo "${mb}Mi"
+        elif [ -n "$kb" ] && [ "$(echo "$kb >= 1" | bc 2>/dev/null)" = "1" ]; then
+            echo "${kb}Ki"
+        else
+            echo "${bytes_int}"
+        fi
+    else
+        # Fallback: simple division (may lose precision)
+        if [ "$bytes_int" -ge 1073741824 ] 2>/dev/null; then
+            echo "$((bytes_int / 1073741824))Gi"
+        elif [ "$bytes_int" -ge 1048576 ] 2>/dev/null; then
+            echo "$((bytes_int / 1048576))Mi"
+        elif [ "$bytes_int" -ge 1024 ] 2>/dev/null; then
+            echo "$((bytes_int / 1024))Ki"
+        else
+            echo "${bytes_int}"
+        fi
+    fi
+}
+
 # Function to find reserved memory
 find_reserved_memory() {
     local namespace_arg=""
     local sort_flag=false
+    local csv_output=false
+    local csv_file="reserved-memory.csv"
     
     # Parse command line arguments (-n has optional arg: empty = all namespaces)
-    while getopts ':n::ash' opt; do
+    while getopts ':n::asoh::' opt; do
         case "$opt" in
             n)
                 if [ -z "${OPTARG}" ]; then
@@ -104,6 +150,12 @@ find_reserved_memory() {
                 ;;
             s)
                 sort_flag=true
+                ;;
+            o)
+                csv_output=true
+                if [ -n "${OPTARG}" ]; then
+                    csv_file="${OPTARG}"
+                fi
                 ;;
             h)
                 Help
@@ -133,8 +185,20 @@ find_reserved_memory() {
         sort_flag=false
     fi
     
-    echo -e "${BLUE}Searching for pods with reserved memory (memory requests)...${NC}"
-    echo
+    if [ "$csv_output" = false ]; then
+        echo -e "${BLUE}Searching for pods with reserved memory (memory requests)...${NC}"
+        echo
+    fi
+    
+    # Build output filename with kube context and timestamp when writing to file
+    if [ "$csv_output" = true ]; then
+        KUBE_CONTEXT=$(${KUBECTL} config current-context 2>/dev/null || echo "unknown")
+        KUBE_CONTEXT_SAFE=$(echo "$KUBE_CONTEXT" | tr '/: ' '_')
+        TIMESTAMP=$(date +%Y-%m-%d_%H-%M-%S)
+        base="${csv_file%.csv}"
+        csv_file="${base}-${KUBE_CONTEXT_SAFE}-${TIMESTAMP}.csv"
+        echo "NAMESPACE,POD,CONTAINER,USAGE,RESERVED" > "$csv_file"
+    fi
     
     # Get all pods with memory requests
     # Using JSON output to parse more reliably
@@ -178,11 +242,13 @@ find_reserved_memory() {
     fi
 
     # Use jq for better parsing
-    # Print header
-    printf "${CYAN}%-20s %-40s %-30s %-15s %-15s${NC}\n" "NAMESPACE" "POD" "CONTAINER" "USAGE" "RESERVED"
-    echo "--------------------------------------------------------------------------------------------------------"
-    echo -e "${YELLOW}(Rows in red: >25% discrepancy between actual usage and reserved)${NC}"
-    echo
+    # Print header (only if not CSV output)
+    if [ "$csv_output" = false ]; then
+        printf "${CYAN}%-20s %-40s %-30s %-15s %-15s${NC}\n" "NAMESPACE" "POD" "CONTAINER" "USAGE" "RESERVED"
+        echo "--------------------------------------------------------------------------------------------------------"
+        echo -e "${YELLOW}(Rows in red: >25% discrepancy between actual usage and reserved)${NC}"
+        echo
+    fi
     
     # Helper to look up usage for a namespace/pod/container
     get_usage() {
@@ -196,14 +262,65 @@ find_reserved_memory() {
         fi
     }
 
+    # Escape CSV field (handle commas and quotes)
+    escape_csv() {
+        local field="$1"
+        # If field contains comma, quote, or newline, wrap in quotes and escape quotes
+        if [[ "$field" =~ [,$\"] ]] || [[ "$field" =~ $'\n' ]]; then
+            echo "\"${field//\"/\"\"}\""
+        else
+            echo "$field"
+        fi
+    }
+    
+    # Create temporary file to accumulate totals (before print_row function)
+    local totals_file=$(mktemp)
+    echo "0|0" > "$totals_file"  # usage_bytes|reserved_bytes
+    
     # Print a row, highlighting in RED if discrepancy between usage and reserved > 25%
     print_row() {
         local namespace=$1 pod_name=$2 container_name=$3 usage=$4 memory_request=$5
         local highlight=false
+        
+        # Accumulate totals
+        local usage_bytes=0 reserved_bytes=0
+        if [ "$usage" != "-" ] && [ -n "$usage" ]; then
+            usage_bytes=$(convert_to_bytes "$usage" 2>/dev/null || echo "0")
+            [ -z "$usage_bytes" ] && usage_bytes=0
+        fi
+        if [ -n "$memory_request" ]; then
+            reserved_bytes=$(convert_to_bytes "$memory_request" 2>/dev/null || echo "0")
+            [ -z "$reserved_bytes" ] && reserved_bytes=0
+        fi
+        
+        # Read current totals and add to them
+        local current_totals
+        current_totals=$(cat "$totals_file" 2>/dev/null || echo "0|0")
+        local total_usage=$(echo "$current_totals" | cut -d'|' -f1)
+        local total_reserved=$(echo "$current_totals" | cut -d'|' -f2)
+        
+        # Ensure we have numeric values (handle empty or non-numeric)
+        [ -z "$total_usage" ] && total_usage=0
+        [ -z "$total_reserved" ] && total_reserved=0
+        [ -z "$usage_bytes" ] && usage_bytes=0
+        [ -z "$reserved_bytes" ] && reserved_bytes=0
+        
+        # Add current values to totals (handle bc output which may have decimals)
+        if command -v bc &>/dev/null; then
+            # Use scale=0 to get integer results, then convert to int
+            total_usage=$(echo "scale=0; ($total_usage + $usage_bytes) / 1" | bc 2>/dev/null || echo "$total_usage")
+            total_reserved=$(echo "scale=0; ($total_reserved + $reserved_bytes) / 1" | bc 2>/dev/null || echo "$total_reserved")
+        else
+            # Fallback: simple addition (may lose precision for large numbers)
+            total_usage=$((total_usage + usage_bytes)) 2>/dev/null || total_usage=0
+            total_reserved=$((total_reserved + reserved_bytes)) 2>/dev/null || total_reserved=0
+        fi
+        
+        # Save updated totals
+        echo "${total_usage}|${total_reserved}" > "$totals_file"
+        
+        # Check for highlighting (discrepancy > 25%)
         if [ "$usage" != "-" ] && [ -n "$memory_request" ] && command -v bc &>/dev/null; then
-            local usage_bytes reserved_bytes
-            usage_bytes=$(convert_to_bytes "$usage")
-            reserved_bytes=$(convert_to_bytes "$memory_request")
             if [ -n "$usage_bytes" ] && [ -n "$reserved_bytes" ] && [ "${reserved_bytes:-0}" -gt 0 ] 2>/dev/null; then
                 local diff_pct
                 diff_pct=$(echo "a=100*(${usage_bytes}-${reserved_bytes})/${reserved_bytes}; if(a<0) a=-a; a" | bc 2>/dev/null)
@@ -214,67 +331,103 @@ find_reserved_memory() {
                 fi
             fi
         fi
-        if [ "$highlight" = true ]; then
-            printf "${RED}%-20s %-40s %-30s %-15s %-15s${NC}\n" "$namespace" "$pod_name" "$container_name" "$usage" "$memory_request"
+        
+        if [ "$csv_output" = true ]; then
+            # Output to CSV file
+            local ns_esc pod_esc cont_esc usage_esc mem_esc
+            ns_esc=$(escape_csv "$namespace")
+            pod_esc=$(escape_csv "$pod_name")
+            cont_esc=$(escape_csv "$container_name")
+            usage_esc=$(escape_csv "$usage")
+            mem_esc=$(escape_csv "$memory_request")
+            echo "${ns_esc},${pod_esc},${cont_esc},${usage_esc},${mem_esc}" >> "$csv_file"
         else
-            printf "%-20s %-40s %-30s %-15s %-15s\n" "$namespace" "$pod_name" "$container_name" "$usage" "$memory_request"
+            # Output to console with colors
+            if [ "$highlight" = true ]; then
+                printf "${RED}%-20s %-40s %-30s %-15s %-15s${NC}\n" "$namespace" "$pod_name" "$container_name" "$usage" "$memory_request"
+            else
+                printf "%-20s %-40s %-30s %-15s %-15s\n" "$namespace" "$pod_name" "$container_name" "$usage" "$memory_request"
+            fi
         fi
     }
 
     # Extract and display pod information
+    # First, collect all data into a temp file to avoid subshell issues with totals
+    local data_file=$(mktemp)
+    
+    echo "$pods_json" | jq -r '
+        .items[] |
+        select((.metadata.namespace | startswith("kube")) | not) |
+        .metadata.namespace as $ns |
+        .metadata.name as $pod |
+        .spec.containers[]? |
+        select(.resources.requests.memory != null) |
+        "\($ns)|\($pod)|\(.name)|\(.resources.requests.memory)"
+    ' > "$data_file"
+    
     if [ "$sort_flag" = true ]; then
         # Sort by memory size (requires conversion)
         # Create temporary file for sorting
         local temp_file=$(mktemp)
+        local sorted_file=$(mktemp)
         
-        echo "$pods_json" | jq -r '
-            .items[] |
-            select((.metadata.namespace | startswith("kube")) | not) |
-            .metadata.namespace as $ns |
-            .metadata.name as $pod |
-            .spec.containers[]? |
-            select(.resources.requests.memory != null) |
-            "\($ns)|\($pod)|\(.name)|\(.resources.requests.memory)"
-        ' | while IFS='|' read -r namespace pod_name container_name memory_request; do
+        while IFS='|' read -r namespace pod_name container_name memory_request; do
             if [ -n "$memory_request" ]; then
                 memory_bytes=$(convert_to_bytes "$memory_request")
                 printf "%s|%s|%s|%s|%s\n" "$memory_bytes" "$namespace" "$pod_name" "$container_name" "$memory_request" >> "$temp_file"
             fi
-        done
+        done < "$data_file"
         
         # Sort and display
         if [ -f "$temp_file" ] && [ -s "$temp_file" ]; then
-            sort -t'|' -rn -k1 "$temp_file" | while IFS='|' read -r _ namespace pod_name container_name memory_request; do
+            sort -t'|' -rn -k1 "$temp_file" > "$sorted_file"
+            while IFS='|' read -r _ namespace pod_name container_name memory_request; do
                 usage=$(get_usage "$namespace" "$pod_name" "$container_name")
                 print_row "$namespace" "$pod_name" "$container_name" "$usage" "$memory_request"
-            done
-            rm -f "$temp_file"
+            done < "$sorted_file"
+            rm -f "$temp_file" "$sorted_file"
         fi
     else
         # Display without sorting
-        echo "$pods_json" | jq -r '
-            .items[] |
-            select((.metadata.namespace | startswith("kube")) | not) |
-            .metadata.namespace as $ns |
-            .metadata.name as $pod |
-            .spec.containers[]? |
-            select(.resources.requests.memory != null) |
-            "\($ns)|\($pod)|\(.name)|\(.resources.requests.memory)"
-        ' | while IFS='|' read -r namespace pod_name container_name memory_request; do
+        while IFS='|' read -r namespace pod_name container_name memory_request; do
             if [ -n "$memory_request" ]; then
                 usage=$(get_usage "$namespace" "$pod_name" "$container_name")
                 print_row "$namespace" "$pod_name" "$container_name" "$usage" "$memory_request"
             fi
-        done
+        done < "$data_file"
     fi
     
+    rm -f "$data_file"
+    
     rm -f "$usage_file"
+    
+    # Read and display totals
+    local final_totals
+    final_totals=$(cat "$totals_file" 2>/dev/null || echo "0|0")
+    local total_usage_bytes=$(echo "$final_totals" | cut -d'|' -f1)
+    local total_reserved_bytes=$(echo "$final_totals" | cut -d'|' -f2)
+    rm -f "$totals_file"
+    
+    # Convert totals to human-readable format
+    local total_usage_display total_reserved_display
+    total_usage_display=$(convert_from_bytes "$total_usage_bytes")
+    total_reserved_display=$(convert_from_bytes "$total_reserved_bytes")
     
     # Count total containers with reserved memory (excluding kube* namespaces)
     local count=$(echo "$pods_json" | jq '[.items[] | select((.metadata.namespace | startswith("kube")) | not) | .spec.containers[]? | select(.resources.requests.memory != null)] | length')
     
-    echo
-    echo -e "${GREEN}Found ${count} container(s) with reserved memory${NC}"
+    if [ "$csv_output" = true ]; then
+        # Add totals row to CSV
+        echo "TOTAL,,,${total_usage_display},${total_reserved_display}" >> "$csv_file"
+        echo -e "${GREEN}Found ${count} container(s) with reserved memory${NC}"
+        echo -e "${GREEN}Results written to: ${csv_file}${NC}"
+    else
+        echo
+        echo "--------------------------------------------------------------------------------------------------------"
+        printf "${CYAN}%-20s %-40s %-30s %-15s %-15s${NC}\n" "TOTAL" "" "" "$total_usage_display" "$total_reserved_display"
+        echo
+        echo -e "${GREEN}Found ${count} container(s) with reserved memory${NC}"
+    fi
 }
 
 # Main execution
