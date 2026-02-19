@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+crds="$(kubectl get crds | grep istio | sort)"
+
+printf '%s\n' "$crds"
+total="$(printf '%s\n' "$crds" | grep -c . 2>/dev/null || echo 0)"
+printf '\nTotal CRDs: %s\n' "$total"
