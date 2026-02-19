@@ -30,7 +30,7 @@ Help() {
     echo -e "-a                     Show all namespaces (explicit)."
     echo -e "-s                     Sort by memory size (descending)."
     echo -e "-o [filename]          Output results to CSV file. Filename gets kube context and timestamp appended (e.g. reserved-memory-<context>-<date>_<time>.csv)."
-    echo -e "Pods in namespaces starting with 'kube' (e.g. kube-system) are excluded."
+    echo -e "Excluded: kube-system namespace."
     echo
     echo -e "${CYAN}Examples:${NC}"
     echo -e "  $0                    # Show all reserved memory in all namespaces"
@@ -198,6 +198,16 @@ find_reserved_memory() {
         base="${csv_file%.csv}"
         csv_file="${base}-${KUBE_CONTEXT_SAFE}-${TIMESTAMP}.csv"
         echo "NAMESPACE,POD,CONTAINER,USAGE,RESERVED" > "$csv_file"
+        # Start elapsed-time timer (background)
+        START_TIME=$(date +%s)
+        (
+            while true; do
+                diff=$(($(date +%s) - START_TIME))
+                printf '\r  Elapsed: %dm %ds' $((diff / 60)) $((diff % 60)) >&2
+                sleep 1
+            done
+        ) &
+        TIMER_PID=$!
     fi
     
     # Get all pods with memory requests
@@ -206,12 +216,14 @@ find_reserved_memory() {
     pods_json=$(${KUBECTL} get pods ${namespace_arg} -o json 2>/dev/null)
     
     if [ $? -ne 0 ]; then
+        [ "$csv_output" = true ] && [ -n "${TIMER_PID:-}" ] && kill "$TIMER_PID" 2>/dev/null
         echo -e "${RED}ERROR: Failed to query Kubernetes cluster.${NC}"
         exit 1
     fi
     
     # Check if jq is available for JSON parsing
     if ! command -v jq &>/dev/null; then
+        [ "$csv_output" = true ] && [ -n "${TIMER_PID:-}" ] && kill "$TIMER_PID" 2>/dev/null
         echo -e "${YELLOW}WARNING: 'jq' not found. Using basic parsing.${NC}"
         echo -e "${YELLOW}For better output, install jq.${NC}"
         echo
@@ -221,7 +233,7 @@ find_reserved_memory() {
         echo "--------------------------------------------------------------------------------------------------------"
         ${KUBECTL} get pods ${namespace_arg} -o custom-columns=NAMESPACE:.metadata.namespace,NAME:.metadata.name,CONTAINER:.spec.containers[*].name,MEMORY-REQUEST:.spec.containers[*].resources.requests.memory 2>/dev/null | \
             grep -v "MEMORY-REQUEST.*<none>" | \
-            awk 'NR>1 && $1 !~ /^kube/ {print $0}'
+            awk 'NR>1 && $1 != "kube-system" {print $0}'
         return
     fi
     
@@ -357,7 +369,7 @@ find_reserved_memory() {
     
     echo "$pods_json" | jq -r '
         .items[] |
-        select((.metadata.namespace | startswith("kube")) | not) |
+        select(.metadata.namespace != "kube-system") |
         .metadata.namespace as $ns |
         .metadata.name as $pod |
         .spec.containers[]? |
@@ -413,12 +425,19 @@ find_reserved_memory() {
     total_usage_display=$(convert_from_bytes "$total_usage_bytes")
     total_reserved_display=$(convert_from_bytes "$total_reserved_bytes")
     
-    # Count total containers with reserved memory (excluding kube* namespaces)
-    local count=$(echo "$pods_json" | jq '[.items[] | select((.metadata.namespace | startswith("kube")) | not) | .spec.containers[]? | select(.resources.requests.memory != null)] | length')
+    # Count total containers with reserved memory (excluding kube-system)
+    local count=$(echo "$pods_json" | jq '[.items[] | select(.metadata.namespace != "kube-system") | .spec.containers[]? | select(.resources.requests.memory != null)] | length')
     
     if [ "$csv_output" = true ]; then
         # Add totals row to CSV
         echo "TOTAL,,,${total_usage_display},${total_reserved_display}" >> "$csv_file"
+        # Stop timer and show final elapsed time
+        if [ -n "${TIMER_PID:-}" ]; then
+            kill "$TIMER_PID" 2>/dev/null
+            wait "$TIMER_PID" 2>/dev/null
+            diff=$(($(date +%s) - START_TIME))
+            printf '\r  Elapsed: %dm %ds\n' $((diff / 60)) $((diff % 60)) >&2
+        fi
         echo -e "${GREEN}Found ${count} container(s) with reserved memory${NC}"
         echo -e "${GREEN}Results written to: ${csv_file}${NC}"
     else
