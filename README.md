@@ -240,10 +240,6 @@ Bash script that lists AWS ACM (Certificate Manager) certificates in the current
 
 ---
 
-## cleanup_purgeable
-
-Bash script that frees purgeable space on macOS by clearing caches, temp files, and triggering APFS reclaim.
-
 ### Requirements
 
 - macOS (uses `~/Library/Caches`, `/Library/Caches`, `/tmp`; APFS cleanup step)
