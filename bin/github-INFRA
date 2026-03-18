@@ -130,6 +130,10 @@ echo " --> KAFKA-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/kafka-INFRA.git
 sleep $timeSec
 
+echo " --> Leganto-INFRA..."
+git clone git@github.huit.harvard.edu:LTS/leganto-INFRA.git
+sleep $timeSec
+
 echo " --> LibraryCloud-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/LibraryCloud-INFRA.git
 sleep $timeSec
