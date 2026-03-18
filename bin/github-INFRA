@@ -205,16 +205,16 @@ echo " --> reporting-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/reporting-INFRA.git
 sleep $timeSec
 
-echo " --> solr-INFRA..."
-git clone git@github.huit.harvard.edu:LTS/solr-INFRA.git
-sleep $timeSec
-
 echo " --> SDS-and-Wowza-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/SDS-and-Wowza-INFRA.git
 sleep $timeSec
 
-echo " --> Secureexit-INFRA..."
-git clone git@github.huit.harvard.edu:LTS/secureexit-INFRA.git
+echo " --> SharedShelfLinker-INFRA..."
+git clone git@github.huit.harvard.edu:LTS/SharedShelfLinker-INFRA.git
+sleep $timeSec
+
+echo " --> solr-INFRA..."
+git clone git@github.huit.harvard.edu:LTS/solr-INFRA.git
 sleep $timeSec
 
 echo " --> viewer-INFRA..."
