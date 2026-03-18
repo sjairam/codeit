@@ -152,9 +152,10 @@ echo " --> mds-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/mds-INFRA.git
 sleep $timeSec
 
-echo " --> metadata-INFRA..."
-git clone git@github.huit.harvard.edu:LTS/metadata-operational-INFRA.git
-sleep $timeSec
+# ARCHIVED
+# echo " --> metadata-INFRA..."
+# git clone git@github.huit.harvard.edu:LTS/metadata-operational-INFRA.git
+# sleep $timeSec
 
 echo " --> mps-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/mps-INFRA.git
@@ -176,6 +177,10 @@ echo " --> nrsadm-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/nrsadm-INFRA.git
 sleep $timeSec
 
+echo " --> oclcscripts-INFRA..."
+git clone git@github.huit.harvard.edu:LTS/oclcscripts-INFRA.git
+sleep $timeSec 
+
 echo " --> olivia-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/olivia-INFRA.git
 sleep $timeSec
@@ -194,6 +199,10 @@ sleep $timeSec
 
 echo " --> presto-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/presto-INFRA.git
+sleep $timeSec
+
+echo " --> reporting-INFRA..."
+git clone git@github.huit.harvard.edu:LTS/reporting-INFRA.git
 sleep $timeSec
 
 echo " --> solr-INFRA..."
