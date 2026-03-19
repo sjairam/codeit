@@ -9,6 +9,7 @@ Download Istio
 
 curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.24.3 sh -
 
+1234 
 
 Add to PATH
 ===========
