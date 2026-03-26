@@ -35,7 +35,7 @@ websites=(
     "https://drsmqsrv-qa.lib.harvard.edu/drs2_activemq/rest/heartbeat"
     "https://drs2-qa.hul.harvard.edu/drs2_webadmin/search"
     "https://eadchecker-qa.lib.harvard.edu/"
-    "https://eda-qa.lib.harvard.edu"
+    # "https://eda-qa.lib.harvard.edu"
     "https://embed-qa.lib.harvard.edu/"
     "https://etd-qa.lib.harvard.edu"
     "https://fal-solr-qa.lib.harvard.edu/api/healthcheck"
