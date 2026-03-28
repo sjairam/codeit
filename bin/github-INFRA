@@ -126,6 +126,10 @@ echo " --> JSTOR-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/JSTOR-INFRA.git
 sleep $timeSec
 
+echo " --> JSTOR-INFRA..."
+git clone git@github.huit.harvard.edu:LTS/JSTOR-RETRO-INFRA.git
+sleep $timeSec
+
 echo " --> KAFKA-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/kafka-INFRA.git
 sleep $timeSec
@@ -165,9 +169,10 @@ echo " --> mpsadm-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/mpsadm-INFRA.git
 sleep $timeSec
 
-echo " --> Murner-INFRA..."
-git clone git@github.huit.harvard.edu:LTS/Murner-INFRA.git
-sleep $timeSec
+# ARCHIVED
+# echo " --> Murner-INFRA..."
+# git clone git@github.huit.harvard.edu:LTS/Murner-INFRA.git
+# sleep $timeSec
 
 echo " --> nrs-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/nrs-INFRA.git
@@ -207,6 +212,10 @@ sleep $timeSec
 
 echo " --> SDS-and-Wowza-INFRA..."
 git clone git@github.huit.harvard.edu:LTS/SDS-and-Wowza-INFRA.git
+sleep $timeSec
+
+echo " --> secureexit-INFRA..."
+git clone git@github.huit.harvard.edu:LTS/secureexit-INFRA.git
 sleep $timeSec
 
 echo " --> SharedShelfLinker-INFRA..."
