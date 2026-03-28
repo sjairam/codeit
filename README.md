@@ -1,28 +1,47 @@
 # codeit
 
-Personal scripts and utilities.
+Personal scripts and utilities for macOS, Kubernetes, AWS, and day-to-day ops. Most runnable tools live under `bin/` and `bin_shell/`; Go sources are in `go/` (build output is typically `bin_go/`).
 
-## aws_list
+## Repository layout
 
-Bash script that lists all running EC2 instances with InstanceID, Name, State, and Private IP.
+| Path | Contents |
+|------|----------|
+| `bin/` | Executable bash helpers (kubectl, AWS, curl checks, etc.) |
+| `bin_shell/` | Longer shell scripts (cert-manager upgrade, restores, cleanup, etc.) |
+| `go/` | Single-file Go programs (`list-rds`, `gen-passwd`, `fpn`, …) |
+| `istio/` | Notes and sample YAML (gateways, routes) |
+| `notebook/` | Jupyter notebook(s) |
+| `zzz-archive-zzz/` | Older copies of some scripts kept for reference |
 
-### Requirements
+## Contents
 
-- AWS CLI installed and in PATH
-- AWS credentials configured (`aws configure`)
-
-### Usage
-
-```bash
-./bin/aws_list [-r region]
-```
-
-### Options
-
-- `-r`, `--region` — AWS region (default: from AWS config or environment)
-- `-h`, `--help` — Show help message
-
----
+- [backup](#backup)
+- [check-vs](#check-vs)
+- [delete-pods](#delete-pods)
+- [find-pods-node](#find-pods-node)
+- [cleanup_purgeable](#cleanup_purgeable)
+- [find-CRDs](#find-crds)
+- [find-reserved](#find-reserved)
+- [export-GW-secrets](#export-gw-secrets)
+- [find-alb](#find-alb)
+- [list-alb](#list-alb)
+- [list-oracle-rds](#list-oracle-rds)
+- [list-postgres-rds](#list-postgres-rds)
+- [list-rds](#list-rds)
+- [gen-passwd](#gen-passwd)
+- [list-secrets](#list-secrets)
+- [get-kubectl](#get-kubectl)
+- [find_github_runners](#find_github_runners)
+- [get-ns-secrets](#get-ns-secrets)
+- [get-ns-clustersecretstore](#get-ns-clustersecretstore)
+- [testQA, testDEV, testProd](#testqa-testdev-testprod)
+- [github-INFRA](#github-infra)
+- [rrd](#rrd)
+- [rrs](#rrs)
+- [restore_via_oidc](#restore_via_oidc)
+- [restore_via_okta](#restore_via_okta)
+- [restore_via_shibboleth](#restore_via_shibboleth)
+- [update-cert-manager](#update-cert-manager)
 
 ## backup
 
@@ -41,7 +60,7 @@ Bash script that creates monthly backups of Documents, Pictures, Movies, and Des
 
 ### What it backs up
 
-Creates a timestamped folder `Documents-{Month}-20{Year}` (e.g. `Documents-Jan-2025`) containing:
+Creates a timestamped folder `Documents-{Month}-20{Year}` (e.g. `Documents-Jan-2026`) containing:
 
 - **00-kube-shells-00/** — Config files: `~/.kube`, `~/.ssh`, `~/.aliases`, `~/.bashrc`, `~/.zshrc`, git configs, `~/.aws`, KeePass (`Passwords.kdb*`)
 - **Documents/** — `~/Documents` folders (00-docs, 00-personal, 00-USEFUL, PROD, QA, DEV, etc.)
@@ -51,32 +70,6 @@ Creates a timestamped folder `Documents-{Month}-20{Year}` (e.g. `Documents-Jan-2
 - **ZZZ-SOFTWARE/** — Rebuild apps from `ZZZ-SOFTWAREZ`
 
 The script creates the folder structure on first run; subsequent runs reuse existing folders. Elapsed time is printed at the end.
-
----
-
-## biggest_files
-
-Bash script that finds and lists the largest files in a given directory.
-
-### Usage
-
-```bash
-./bin/biggest_files <folder> [num_files]
-```
-
-### Arguments
-
-- `<folder>` — Directory to search (required)
-- `[num_files]` — Number of files to show (optional, default: 20)
-
-### Examples
-
-```bash
-./bin/biggest_files ~/Downloads 10
-./bin/biggest_files /tmp
-```
-
-Output shows file size and path, sorted largest first.
 
 ---
 
@@ -209,18 +202,16 @@ go build -o bin_go/fpn go/fpn.go
 
 ---
 
+## cleanup_purgeable
+
+Bash script that frees disk space on macOS by clearing common cache and temp locations and nudging APFS to reclaim purgeable space.
+
 ### Requirements
 
 - macOS (uses `~/Library/Caches`, `/Library/Caches`, `/tmp`; APFS cleanup step)
 - sudo (for system caches and APFS fill/free step)
 
 ### Usage
-
-```bash
-./bin/cleanup_purgeable
-```
-
-Shell-only version:
 
 ```bash
 ./bin_shell/cleanup_purgeable.sh
@@ -235,6 +226,42 @@ Shell-only version:
 - **APFS reclaim** — Creates ~1GB in `/private/tmp/cleanup`, then deletes it to encourage APFS to free purgeable space
 
 When finished, the script suggests running `df -h` to check available space.
+
+---
+
+## find-CRDs
+
+Small bash helper that lists Istio-related CustomResourceDefinitions from the cluster and prints a total count.
+
+### Requirements
+
+- kubectl installed and in PATH
+- kubectl context configured
+
+### Usage
+
+```bash
+./bin/find-CRDs
+```
+
+---
+
+## find-reserved
+
+Bash script that reports Kubernetes pods with memory **requests** (reserved memory) across namespaces, with optional filtering, sorting, and CSV export.
+
+### Requirements
+
+- kubectl installed and in PATH
+- kubectl context configured
+
+### Usage
+
+```bash
+./bin/find-reserved [-h] [-n [namespace]] [-a] [-s] [-o [filename]]
+```
+
+Use `./bin/find-reserved -h` for full options. By default, `kube-system` is excluded.
 
 ---
 
@@ -532,6 +559,25 @@ kubectl is installed to `/usr/local/bin`. The script verifies the binary after i
 
 ---
 
+## find_github_runners
+
+Bash script that reads a host list file and, over SSH, reports disk usage for `/github-actions-runner/` (or a custom path) on each host: `df`, `du`, and a summary table.
+
+### Requirements
+
+- SSH access to the hosts (key-based auth or agent; optional `-i` identity file)
+- A hosts file (one host per line; `#` comments allowed)
+
+### Usage
+
+```bash
+./bin_shell/find_github_runners -f HOSTS_FILE [-u USER] [-p PATH] [-i IDENTITY_FILE]
+```
+
+Use `./bin_shell/find_github_runners -h` for options. Environment variable `CONNECT_TIMEOUT` (default `10`) sets the SSH connect timeout in seconds.
+
+---
+
 ## get-ns-secrets
 
 Bash script that lists Kubernetes namespaces (excluding system namespaces by default) and optionally saves all secrets from each namespace to a YAML file.
@@ -626,6 +672,26 @@ Bash script that lists Kubernetes namespaces (excluding system namespaces by def
 ./bin/get-ns-clustersecretstore --save-clustersecretstore --all-contexts
 ./bin/get-ns-clustersecretstore --save-clustersecretstore --contexts ctx1,ctx2,ctx3
 ```
+
+---
+
+## testQA, testDEV, testProd
+
+Bash scripts that HTTP(S)-check a fixed list of environment URLs (QA, DEV, or production) and print a colored summary of successes and failures. Edit the `websites=(...)` array in each script to match the endpoints you care about.
+
+### Usage
+
+```bash
+./bin/testQA
+./bin/testDEV
+./bin/testProd
+```
+
+---
+
+## github-INFRA
+
+Bash script that creates `~/GITHUB/APPS-INFRA` and clones a large set of `*-INFRA` Git repositories (intended for a specific internal Git host). Review and edit repository URLs and paths inside the script before running.
 
 ---
 
@@ -794,8 +860,8 @@ Bash script that safely upgrades cert-manager in a Kubernetes cluster, supportin
 ### Examples
 
 ```bash
-./bin_shell/update_cert_manager.sh -v v1.13.3 -m helm
-./bin_shell/update_cert_manager.sh -v v1.13.3 -m yaml --dry-run
-./bin_shell/update_cert_manager.sh -f -v v1.13.3
+./bin_shell/update-cert-manager.sh -v v1.13.3 -m helm
+./bin_shell/update-cert-manager.sh -v v1.13.3 -m yaml --dry-run
+./bin_shell/update-cert-manager.sh -f -v v1.13.3
 ```
 
