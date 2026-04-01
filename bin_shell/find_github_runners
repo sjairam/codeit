@@ -44,7 +44,7 @@ Example hosts file:
 
 Remote checks:
   - df -hP on the path (filesystem free space for that mount)
-  - du -sh on the path (space used by the directory)
+  - du -h --max-depth=1 on the path (space used by directory and top-level children)
   - A summary table at the end lists space used on each host
 EOF
 }
@@ -95,7 +95,7 @@ else
 fi
 echo
 echo "--- du (directory size) ---"
-if du -sh "$RUNNER_PATH" 2>/dev/null; then
+if du -h --max-depth=1 "$RUNNER_PATH" 2>/dev/null; then
   :
 else
   echo "(du failed - path may not exist)"
