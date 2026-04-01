@@ -50,7 +50,7 @@ build_cron_command() {
 
 run_cleanup() {
   local deleted_any=0
-  local subdir target
+  local subdir target candidate protected_file
 
   print_info "Base path: $BASE_PATH"
   print_info "Retention: older than $RETENTION_DAYS days"
@@ -64,10 +64,28 @@ run_cleanup() {
     fi
 
     print_info "Cleaning: $target"
-    # Delete immediate child directories older than retention.
-    if find "$target" -mindepth 1 -maxdepth 1 -type d -mtime +"$RETENTION_DAYS" -print -exec rm -rf {} +; then
+    # Delete immediate child directories older than retention, with safety exclusions.
+    while IFS= read -r -d '' candidate; do
+      if [[ "$(basename "$candidate")" == external* ]]; then
+        print_info "Skipping external folder: $candidate"
+        continue
+      fi
+
+      protected_file="$(find "$candidate" -type f \( -name ".credential" -o -name "*.credential" -o -name ".credentail*" -o -name ".runner" \) -print -quit)"
+      if [[ -n "$protected_file" ]]; then
+        print_info "Skipping protected folder (.credential/.runner): $candidate"
+        continue
+      fi
+
+      print_info "Deleting: $candidate"
+      rm -rf "$candidate"
       deleted_any=1
-    fi
+    done < <(
+      find "$target" \
+        -mindepth 1 -maxdepth 1 -type d -mtime +"$RETENTION_DAYS" \
+        ! -name ".credential" ! -name "external" ! -name "external-*" \
+        -print0
+    )
   done
 
   if [[ "$deleted_any" -eq 0 ]]; then
