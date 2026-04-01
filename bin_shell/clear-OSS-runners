@@ -1,0 +1,164 @@
+#!/usr/bin/env bash
+#
+# Manage cron cleanup for OSS runner work directories.
+# Deletes child directories older than a configured number of days.
+#
+set -euo pipefail
+
+BASE_PATH="/github-runners-work"
+RETENTION_DAYS=7
+SCHEDULE="15 2 * * *"
+SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/$(basename "${BASH_SOURCE[0]}")"
+LOG_FILE="/tmp/clear-oss-runners.log"
+
+TARGET_SUBDIRS=(
+  "oss2-actions-runner-1"
+  "oss2-actions-runner-2"
+  "oss2-actions-runner-3"
+  "oss2-actions-runner-4"
+)
+
+usage() {
+  cat << EOF
+Usage: $(basename "$0") [OPTIONS]
+
+Actions:
+  --install-cron        Install/update cron entry (default action)
+  --remove-cron         Remove cron entry
+  --run-now             Run cleanup immediately
+
+Options:
+  --base-path PATH      Base path containing runner folders (default: $BASE_PATH)
+  --days N              Delete directories older than N days (default: $RETENTION_DAYS)
+  --schedule CRON       Cron schedule for install (default: "$SCHEDULE")
+  --log-file FILE       Cron log file (default: $LOG_FILE)
+  -h, --help            Show help
+
+Example:
+  $(basename "$0") --install-cron --base-path /github-runners-work --days 7
+EOF
+}
+
+print_info() { printf '[INFO] %s\n' "$1"; }
+print_warn() { printf '[WARN] %s\n' "$1"; }
+print_err()  { printf '[ERROR] %s\n' "$1" >&2; }
+
+build_cron_command() {
+  printf '%s --run-now --base-path %q --days %q >> %q 2>&1' \
+    "$SCRIPT_PATH" "$BASE_PATH" "$RETENTION_DAYS" "$LOG_FILE"
+}
+
+run_cleanup() {
+  local deleted_any=0
+  local subdir target
+
+  print_info "Base path: $BASE_PATH"
+  print_info "Retention: older than $RETENTION_DAYS days"
+
+  for subdir in "${TARGET_SUBDIRS[@]}"; do
+    target="${BASE_PATH}/${subdir}"
+
+    if [[ ! -d "$target" ]]; then
+      print_warn "Skipping missing directory: $target"
+      continue
+    fi
+
+    print_info "Cleaning: $target"
+    # Delete immediate child directories older than retention.
+    if find "$target" -mindepth 1 -maxdepth 1 -type d -mtime +"$RETENTION_DAYS" -print -exec rm -rf {} +; then
+      deleted_any=1
+    fi
+  done
+
+  if [[ "$deleted_any" -eq 0 ]]; then
+    print_info "No eligible directories found for deletion."
+  fi
+}
+
+install_cron() {
+  local cron_command cron_line existing_cron
+  cron_command="$(build_cron_command)"
+  cron_line="${SCHEDULE} ${cron_command}"
+  existing_cron="$(crontab -l 2>/dev/null || true)"
+
+  # Remove any previous entries for this script, then append updated one.
+  {
+    printf '%s\n' "$existing_cron" | awk -v script="$SCRIPT_PATH" 'index($0, script) == 0'
+    printf '%s\n' "$cron_line"
+  } | crontab -
+
+  print_info "Cron entry installed/updated:"
+  print_info "$cron_line"
+}
+
+remove_cron() {
+  local existing_cron
+  existing_cron="$(crontab -l 2>/dev/null || true)"
+
+  if [[ -z "$existing_cron" ]]; then
+    print_warn "No crontab entries exist."
+    return
+  fi
+
+  printf '%s\n' "$existing_cron" | awk -v script="$SCRIPT_PATH" 'index($0, script) == 0' | crontab -
+  print_info "Removed cron entries for $SCRIPT_PATH"
+}
+
+ACTION="install"
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --install-cron)
+      ACTION="install"
+      shift
+      ;;
+    --remove-cron)
+      ACTION="remove"
+      shift
+      ;;
+    --run-now)
+      ACTION="run"
+      shift
+      ;;
+    --base-path)
+      BASE_PATH="${2:-}"
+      shift 2
+      ;;
+    --days)
+      RETENTION_DAYS="${2:-}"
+      shift 2
+      ;;
+    --schedule)
+      SCHEDULE="${2:-}"
+      shift 2
+      ;;
+    --log-file)
+      LOG_FILE="${2:-}"
+      shift 2
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      print_err "Unknown option: $1"
+      usage
+      exit 1
+      ;;
+  esac
+done
+
+if [[ -z "$BASE_PATH" || -z "$RETENTION_DAYS" ]]; then
+  print_err "--base-path and --days must not be empty."
+  exit 1
+fi
+
+if [[ ! "$RETENTION_DAYS" =~ ^[0-9]+$ ]]; then
+  print_err "--days must be a non-negative integer."
+  exit 1
+fi
+
+case "$ACTION" in
+  install) install_cron ;;
+  remove)  remove_cron ;;
+  run)     run_cleanup ;;
+esac
