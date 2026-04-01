@@ -44,8 +44,13 @@ print_warn() { printf '[WARN] %s\n' "$1"; }
 print_err()  { printf '[ERROR] %s\n' "$1" >&2; }
 
 build_cron_command() {
-  printf '%s --run-now --base-path %q --days %q >> %q 2>&1' \
-    "$SCRIPT_PATH" "$BASE_PATH" "$RETENTION_DAYS" "$LOG_FILE"
+  local run_cmd
+  printf -v run_cmd '%q --run-now --base-path %q --days %q' \
+    "$SCRIPT_PATH" "$BASE_PATH" "$RETENTION_DAYS"
+
+  # Prepend each run's output to the log with YYYY-MM-DD header (newest first).
+  printf 'tmp=$(mktemp) && { printf "[%%s]\n" "$(date +\%%F)"; %s; printf "\n"; } > "$tmp" 2>&1 && { cat "$tmp"; [ -f %q ] && cat %q; } > "$tmp.new" && mv "$tmp.new" %q && rm -f "$tmp"' \
+    "$run_cmd" "$LOG_FILE" "$LOG_FILE" "$LOG_FILE"
 }
 
 run_cleanup() {
