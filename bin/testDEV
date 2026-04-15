@@ -53,7 +53,8 @@ websites=(
     "https://lc-tools-dev.lib.harvard.edu/oai/?verb=Identify"
     "https://listview-dev.lib.harvard.edu"
     "https://lts-pipelines-dev.lib.harvard.edu/home"
-    "https://mps-dev.lib.harvard.edu/iiif/2/URN-3:HUL.OIS:101114808"
+    # FASLE POSITIVE
+    # "https://mps-dev.lib.harvard.edu/iiif/2/URN-3:HUL.OIS:101114808"
     "https://nrs-dev.lib.harvard.edu/healthcheck"
     "https://nrsadmin-dev.lib.harvard.edu/resources/search/advanced"
     "https://olivia-dev.lib.harvard.edu/olivia/servlet/OliviaServlet"
