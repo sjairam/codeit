@@ -26,6 +26,7 @@ websites=(
     "https://logs.qa4.lib.harvard.edu/login"
     "https://drs-file-api-qa.lib.harvard.edu/drs-file-api/heartbeat"
     "https://drs2-qa.hul.harvard.edu/drs2_webadmin/search"
+    "https://drs2-services-qa.hul.harvard.edu/health"
     "https://wordshack-qa.lib.harvard.edu/wordshack/rest/termLabels/adminFlag"
 )
 
