@@ -18,7 +18,7 @@ failed=0
 
 # Print header with date and timestamp
 echo -e "${BLUE}=========================================${NC}"
-echo -e "${CYAN} ** PROD **  Environment Health Check${NC}"
+echo -e "${CYAN} ** PROD ** environment health check${NC}"
 echo -e "${BLUE}Date: $(date '+%d-%m-%Y')${NC}"
 echo -e "${BLUE}Time: $(date '+%H:%M:%S') / EST: $(TZ='America/New_York' date '+%H:%M:%S')${NC}"
 echo -e "${BLUE}=========================================${NC}\n"
