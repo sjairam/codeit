@@ -95,7 +95,7 @@ do
         ((failed++))
     else
         # Set color based on status code
-        if [ "$status_code" = "200" ] || [ "$status_code" = "302" ]; then
+        if [ "$status_code" = "200" ] || [ "$status_code" = "302" ] || [ "$status_code" = "307" ]; then
             status_color=$GREEN
             ((success++))
         else
