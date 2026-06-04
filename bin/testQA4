@@ -24,10 +24,11 @@ websites=(
     "https://cluster-console.qa4.lib.harvard.edu/"
     "https://deployment.qa4.lib.harvard.edu"
     "https://logs.qa4.lib.harvard.edu/login"
-    "https://drs-file-api-qa.lib.harvard.edu/drs-file-api/heartbeat"
-    "https://drs2-qa.hul.harvard.edu/drs2_webadmin/search"
-    "https://drs2-services-qa.hul.harvard.edu/health"
-    "https://wordshack-qa.lib.harvard.edu/wordshack/rest/termLabels/adminFlag"
+    "https://aqueduct.qa4.lib.harvard.edu/scantic/health/"
+    #"https://drs-file-api-qa.lib.harvard.edu/drs-file-api/heartbeat"
+    #"https://drs2-qa.hul.harvard.edu/drs2_webadmin/search"
+    #"https://drs2-services-qa.hul.harvard.edu/health"
+    #"https://wordshack-qa.lib.harvard.edu/wordshack/rest/termLabels/adminFlag"
 )
 
 total=${#websites[@]}
