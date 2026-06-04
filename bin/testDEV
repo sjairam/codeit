@@ -33,7 +33,8 @@ websites=(
     "https://curiosity-dev.lib.harvard.edu"
     "https://dims-dev.lib.harvard.edu/readiness"
     "https://drsmqsrv-dev.lib.harvard.edu/drs2_activemq/rest/heartbeat"
-    "https://drs2-dev.hul.harvard.edu/drs2_webadmin/search"
+    # Decomm DRS
+    #"https://drs2-dev.hul.harvard.edu/drs2_webadmin/search"
     "https://eadchecker-dev.lib.harvard.edu/"
     # "https://eda-dev.lib.harvard.edu"
     "https://embed-dev.lib.harvard.edu/"
@@ -58,7 +59,8 @@ websites=(
     "https://nrs-dev.lib.harvard.edu/healthcheck"
     "https://nrsadmin-dev.lib.harvard.edu/resources/search/advanced"
     "https://olivia-dev.lib.harvard.edu/olivia/servlet/OliviaServlet"
-    "https://policyadmin-dev.lib.harvard.edu/policy/servlet/admin"
+    # Decomm Policy
+    #"https://policyadmin-dev.lib.harvard.edu/policy/servlet/admin"
     "https://pds-dev.lib.harvard.edu/pds"
     "https://solr-dev.lib.harvard.edu/solr/#/login"
     "https://mps-dev.lib.harvard.edu/sds/healthcheck.jsp"
