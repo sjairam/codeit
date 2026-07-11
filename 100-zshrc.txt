@@ -1,0 +1,94 @@
+# User configuration
+
+# Preferred editor for local and remote sessions
+# if [[ -n $SSH_CONNECTION ]]; then
+#   export EDITOR='vim'
+# else
+#   export EDITOR='nvim'
+# fi
+
+# Compilation flags
+# export ARCHFLAGS="-arch $(uname -m)"
+
+TRACE="FALSE"
+
+# Add keys
+ssh-add --apple-load-keychain ~/.ssh/id_harvard
+
+if [ -f ~/.aliases ]; then
+    . ~/.aliases
+fi
+
+if [ -f ~/.trace ]; then
+    export TRACE="TRUE"
+fi
+
+## First PATH
+export KUBECONFIG=~/.kube/config
+export PATH="/usr/local/bin:$PATH"
+export PATH="/Users/sjairam/GITHUB/personal/codeit/bin_go:$PATH"
+
+## Second PATH
+export PATH="/Users/sjairam/GITHUB/personal/codeit/bin:$PATH"
+export PATH="/Users/sjairam/GITHUB/personal/codeit/bin_shell:$PATH"
+
+## Add KREW to path
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$HOME/kubectl-plugin:$PATH"
+if [ "$TRACE" = "TRUE" ]; then
+     echo " --> Added Krew "
+fi
+echo "Trace is $TRACE"
+
+if [ "$TRACE" = "TRUE" ]; then
+     echo " --> Added sqlplus to PATH"
+fi
+
+export PATH=$PATH:/usr/local/bin/:/opt/homebrew/bin/
+
+## KUBE PS1
+source "/opt/homebrew/opt/kube-ps1/share/kube-ps1.sh"
+PS1='$(kube_ps1)'$PS1
+if [ "$TRACE" = "TRUE" ]; then
+     echo " --> Added kube ps"
+fi
+
+## Istio: interactively choose which version to add to PATH
+_istio_dirs=(
+  /Users/sjairam/istio-1.24.2/bin
+  /Users/sjairam/istio-1.26.2/bin
+  /Users/sjairam/istio-1.28.3/bin
+)
+
+
+## Add SSH Keys
+if [ "$TRACE" = "TRUE" ]; then
+     echo " Load keys 1"
+fi
+ssh-add ~/.ssh/id_harvard
+
+if [ "$TRACE" = "TRUE" ]; then
+     echo " Load keys 5"
+fi
+ssh-add ~/.ssh/id_rsa_20250211
+if [ "$TRACE" = "TRUE" ]; then
+     echo " Load key 6"
+fi
+ssh-add ~/.ssh/id_202503
+if [ "$TRACE" = "TRUE" ]; then
+     echo " iLoad key 8"
+fi
+ssh-add ~/.ssh/id_202503Harvard
+
+if [ "$TRACE" = "TRUE" ]; then
+     echo " iLoad key 10-March"
+fi
+ssh-add ~/.ssh/id_rsa_202603
+
+ssh-add ~/.ssh/id_rsa_202606_macbookm3
+
+## Add istio 1.28.3
+export PATH=$PATH:/Users/sjairam/istio-1.28.3/bin
+if [ "$TRACE" = "TRUE" ]; then
+    echo " --> Added istio 1.28.3"
+fi
+
